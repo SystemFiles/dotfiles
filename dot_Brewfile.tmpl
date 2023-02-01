@@ -1,0 +1,64 @@
+# -*-mode:ruby-*- vim:ft=ruby
+
+# ~/.Brewfile
+# =============================================================================
+# Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask and the Mac
+# App Store.
+#
+# Reference: https://github.com/Homebrew/homebrew-bundle
+
+# 'brew tap'
+tap "azure/functions"
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+tap "homebrew/core"
+tap "mas-cli/tap"
+
+# 'brew install'
+brew "azure-cli"
+brew "azure/functions/azure-functions-core-tools@3"
+brew "base64"
+brew "cmake"
+brew "coreutils"
+brew "corkscrew"
+brew "curl"
+brew "docker"
+brew "docker-compose"
+brew "etcd"
+brew "findutils"
+brew "gcc"
+brew "gdbm"
+brew "git"
+brew "git-lfs"
+brew "gnupg"
+brew "gnu-sed"
+brew "gnutls"
+brew "go"
+brew "helm"
+brew "htop"
+brew "jq"
+brew "make"
+brew "qemu"
+brew "readline"
+brew "rbenv"
+brew "tree"
+brew "watch"
+brew "wget"
+brew "yq"
+brew "zplug"
+brew "terraform"
+brew "terraform-docs"
+brew "terraform-ls"
+brew "vault"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+
+{{- if eq .chezmoi.os "darwin" }}
+brew "bash"
+brew "bash-completion"
+brew "dockutil"
+{{- end }}
+
+# 'brew install --cask'
+cask "visual-studio-code"
