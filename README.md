@@ -6,8 +6,7 @@ My personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmo
 ### Linux
 
 ```sh
-curl -sfL https://git.io/chezmoi | sh
-chezmoi init --apply --verbose systemfiles 
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply SystemFiles
 ```
 
 ## Install location
