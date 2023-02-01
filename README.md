@@ -7,7 +7,7 @@ My personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmo
 
 ```sh
 curl -sfL https://git.io/chezmoi | sh
-chezmoi init --apply --verbose sylus
+chezmoi init --apply --verbose systemfiles 
 ```
 
 ## Install location
