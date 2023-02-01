@@ -22,6 +22,9 @@
     # Detect whitespace errors when applying a patch.
     whitespace = fix
 
+[pull]
+    ff = only
+
 [commit]
     # Specify template file for new commit messages.
     template = ~/.gitmessage
