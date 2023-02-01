@@ -15,9 +15,15 @@
 
 {{/* boolean feature tags */}}
 {{- $kubernetes := false -}}{{/* true if this machine is used for Kubernetes work */}}
+{{- $headless := false -}}{{/* true if this machine does not have a keyboard/mouse or is virtual */}}
 {{- "" -}}
 
 {{- $hostname := .chezmoi.hostname -}}
+
+{{- $headless := get . "headless" -}}
+{{- if not $headless -}}
+{{-   $headless = promptBool "Is this machine headless" -}}
+{{- end -}}
 
 {{- $email := get . "email" -}}
 {{- if not $email -}}
@@ -45,6 +51,7 @@
   email      = {{ $email | quote }}
   git_user   = {{ $git_user | quote }}
   work       = {{ $work }}
+  headless   = {{ $headless }}
   hostname   = {{ $hostname | quote }}
   kubernetes = {{ $kubernetes }}
   personal   = {{ $personal }}
