@@ -48,9 +48,9 @@ source $ZSH/oh-my-zsh.sh
 # Includes
 # ---------------------------------------------------------------------------------
 
-[ -f $HOME/.bash_aliases ] && \. $HOME/.bash_aliases
-[ -f $HOME/.bash_exports ] && \. $HOME/.bash_exports
-[ -f $HOME/.bash_functions ] && \. $HOME/.bash_functions
+[ -f $HOME/.bash_aliases ] && source $HOME/.bash_aliases
+[ -f $HOME/.bash_exports ] && source $HOME/.bash_exports
+[ -f $HOME/.bash_functions ] && source $HOME/.bash_functions
 
 {{- if .kubernetes -}}
 # Kubernetes Config
@@ -59,7 +59,7 @@ source $ZSH/oh-my-zsh.sh
 # Get Kubectl Command Completions
 source <(kubectl completion zsh)
 
-[[ -f ~/.kube_aliases ]] && \. $HOME/.kube_aliases
+[[ -f ~/.kube_aliases ]] && source $HOME/.kube_aliases
 
 {{- if .work -}}
 alias kl='kubelogin convert-kubeconfig'
@@ -77,8 +77,8 @@ export LESS='-j15 R'
 alias h=history
 alias k=kubectl
 
-# kubernetes config
 {{- if (and (.kubernetes) (eq .chezmoi.hostname "l-sykeben-1.statcan.ca")) -}}
+# Kubernetes Cloud Workstation Config
 export KUBECONFIG="${KUBECONFIG}:$HOME/.kube/k8s-cancentral-01-dev-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-infratest-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-management-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-production-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-test-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-02-innovation-shared/kubeconfig.canadacentral.json"
 {{- end -}}
 
