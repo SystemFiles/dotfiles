@@ -6,11 +6,13 @@
 # shellcheck source=/dev/null
 # shellcheck disable=SC2034
 
-{{- if eq .chezmoi.os "darwin" -}}
+{{ if eq .chezmoi.os "darwin" }}
+
 # Brew Configuration
 # ---------------------------------------------------------------------------------
 export HOMEBREW_NO_AUTO_UPDATE=1
-{{- end -}}
+
+{{ end }}
 
 # ZSH Configuration
 # ---------------------------------------------------------------------------------
@@ -52,7 +54,7 @@ source $ZSH/oh-my-zsh.sh
 [ -f $HOME/.bash_exports ] && source $HOME/.bash_exports
 [ -f $HOME/.bash_functions ] && source $HOME/.bash_functions
 
-{{- if .kubernetes -}}
+{{ if .kubernetes }}
 # Kubernetes Config
 # ---------------------------------------------------------------------------------
 
@@ -61,10 +63,11 @@ source <(kubectl completion zsh)
 
 [[ -f ~/.kube_aliases ]] && source $HOME/.kube_aliases
 
-{{- if .work -}}
+{{ if .work }}
 alias kl='kubelogin convert-kubeconfig'
-{{- end -}}
-{{- end -}}
+{{ end }}
+
+{{ end }}
 
 # History Configuration
 # ---------------------------------------------------------------------------------
@@ -77,8 +80,8 @@ export LESS='-j15 R'
 alias h=history
 alias k=kubectl
 
-{{- if (and (.kubernetes) (eq .chezmoi.hostname "l-sykeben-1.statcan.ca")) -}}
+{{ if (and (.kubernetes) (eq .chezmoi.hostname "l-sykeben-1.statcan.ca")) }}
 # Kubernetes Cloud Workstation Config
 export KUBECONFIG="${KUBECONFIG}:$HOME/.kube/k8s-cancentral-01-dev-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-infratest-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-management-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-production-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-test-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-02-innovation-shared/kubeconfig.canadacentral.json"
-{{- end -}}
+{{ end }}
 
