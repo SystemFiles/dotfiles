@@ -60,7 +60,7 @@ brew "bash-completion"
 brew "dockutil"
 {{- end }}
 
-{{- if not .chezmoi.headless }}
+{{- if not .headless }}
 # 'brew install --cask'
 cask "visual-studio-code"
 {{- end }}
