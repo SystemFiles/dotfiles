@@ -39,6 +39,8 @@
 {{-   $work = promptBool "Is this a work computer" -}}
 {{- end -}}
 
+{{- $personal := not $work -}}
+
 [data]
   email      = {{ $email | quote }}
   git_user   = {{ $git_user | quote }}
@@ -46,4 +48,3 @@
   hostname   = {{ $hostname | quote }}
   kubernetes = {{ $kubernetes }}
   personal   = {{ $personal }}
-{{- end }}
