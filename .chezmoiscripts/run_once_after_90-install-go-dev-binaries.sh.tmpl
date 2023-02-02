@@ -1,0 +1,17 @@
+{{ if eq .chezmoi.os "darwin" "linux" -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+packages=(
+  github.com/kisielk/errcheck@latest
+  golang.org/x/tools/cmd/goimports@latest
+  github.com/go-delve/delve/cmd/dlv@latest
+  honnef.co/go/tools/cmd/staticcheck@latest
+)
+
+for package in ${packages[@]}; do
+  go install $package
+done
+
+{{ end }}
