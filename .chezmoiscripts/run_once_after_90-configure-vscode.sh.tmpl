@@ -9,6 +9,7 @@ extensions=(
   golang.go
   hashicorp.terraform
   dracula-theme.theme-dracula
+  4ops.terraform
   4ops.packer
   pkief.material-icon-theme
   rust-lang.rust-analyzer
@@ -18,7 +19,7 @@ extensions=(
 )
 
 for extension in ${extensions[@]}; do
-    code --force --install-extension $extension
+  code --force --install-extension $extension
 done
 
 {{ if (eq .chezmoi.os "darwin") }}
@@ -28,8 +29,8 @@ defaults delete -g ApplePressAndHoldEnabled || true
 
 {{ if (eq .chezmoi.os "linux") }}
 if ! grep -qF fs.inotify.max_user_watches=524288 /etc/sysctl.conf; then
-        echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
-        sudo sysctl -p
+  echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+  sudo sysctl -p
 fi
 {{ end }}
 

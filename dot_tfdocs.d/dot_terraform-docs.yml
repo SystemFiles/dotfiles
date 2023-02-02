@@ -13,16 +13,16 @@ sections:
 
 content: |-
   {{ .Requirements }}
-  
+
   {{ .Inputs }}
 
-  ## Usage
-
-  ```terraform
-  {{ include "example/standard_usage.txt" }}
-  ```
-
   {{ .Outputs }}
+
+  ## Examples
+
+  ```hcl
+  {{ include "examples/standard.tf" }}
+  ```
 
 output:
   file: ""
@@ -42,8 +42,7 @@ settings:
   html: true
   indent: 2
   lockfile: true
-  read-comments: false
+  read-comments: true
   required: true
   sensitive: true
   type: true
-

@@ -1,0 +1,4 @@
+Include config.d/*
+
+# disable that annoying host-key checking crap
+StrictHostKeyChecking no

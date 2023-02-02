@@ -18,3 +18,9 @@
     exact = true
     stripComponents = 1
 
+[".gittools"]
+    type = "git-repo"
+    url = "https://github.com/SystemFiles/git-toolkit.git"
+    refreshPeriod = "168h"
+    [".gittools".pull]
+        args = ["--ff-only"]

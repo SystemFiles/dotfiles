@@ -32,7 +32,7 @@
 
 {{- $git_user := get . "git_user" -}}
 {{- if not $git_user -}}
-{{-   $git_user = promptString "Git username for the author/committer" -}}
+{{-   $git_user = promptString "Git full-name/username for the author/committer" -}}
 {{- end -}}
 
 {{- $kubernetes := get . "kubernetes" -}}
