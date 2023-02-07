@@ -14,14 +14,14 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 # ZSH Configuration
 # ---------------------------------------------------------------------------------
 
-export PATH=$HOME/bin:$PATH
+export PATH={{ .chezmoi.homeDir }}/bin:$PATH
 [ -d /snap/bin ] && export PATH=/snap/bin:$PATH
-[ -d $HOME/.cargo/bin ] && export PATH=$HOME/.cargo/bin:$PATH
-[ -d $HOME/go/bin ] && export PATH=$HOME/go/bin:$PATH
-[ -d $HOME/.local/bin ] && export PATH=$HOME/.local/bin:$PATH
-[ -d $HOME/.gittools ] && export PATH=$HOME/.gittools:$PATH
+[ -d {{ .chezmoi.homeDir }}/.cargo/bin ] && export PATH={{ .chezmoi.homeDir }}/.cargo/bin:$PATH
+[ -d {{ .chezmoi.homeDir }}/go/bin ] && export PATH={{ .chezmoi.homeDir }}/go/bin:$PATH
+[ -d {{ .chezmoi.homeDir }}/.local/bin ] && export PATH={{ .chezmoi.homeDir }}/.local/bin:$PATH
+[ -d {{ .chezmoi.homeDir }}/.gittools ] && export PATH={{ .chezmoi.homeDir }}/.gittools:$PATH
 
-export ZSH=$HOME/.oh-my-zsh
+export ZSH={{ .chezmoi.homeDir }}/.oh-my-zsh
 
 plugins=(
   colored-man-pages
@@ -49,10 +49,10 @@ source $ZSH/oh-my-zsh.sh
 # Includes
 # ---------------------------------------------------------------------------------
 
-[ -f $HOME/.bash_aliases ] && source $HOME/.bash_aliases
-[ -f $HOME/.bash_exports ] && source $HOME/.bash_exports
-[ -f $HOME/.bash_functions ] && source $HOME/.bash_functions
-[ -f $HOME/.zsh_custom ] && source $HOME/.zsh_custom
+[ -f {{ .chezmoi.homeDir }}/.bash_aliases ] && source {{ .chezmoi.homeDir }}/.bash_aliases
+[ -f {{ .chezmoi.homeDir }}/.bash_exports ] && source {{ .chezmoi.homeDir }}/.bash_exports
+[ -f {{ .chezmoi.homeDir }}/.bash_functions ] && source {{ .chezmoi.homeDir }}/.bash_functions
+[ -f {{ .chezmoi.homeDir }}/.zsh_custom ] && source {{ .chezmoi.homeDir }}/.zsh_custom
 
 {{ if .kubernetes }}
 # Kubernetes Config
@@ -61,10 +61,15 @@ source $ZSH/oh-my-zsh.sh
 # Get Kubectl Command Completions
 source <(kubectl completion zsh)
 
-[[ -f ~/.kube_aliases ]] && source $HOME/.kube_aliases
+[[ -f ~/.kube_aliases ]] && source {{ .chezmoi.homeDir }}/.kube_aliases
 
 {{ if .work }}
 alias kl='kubelogin convert-kubeconfig'
+
+if [[ -z $KUBECONFIG ]]; then
+  export KUBECONFIG={{ .chezmoi.homeDir }}/.kube/config
+fi
+export KUBECONFIGS="${KUBECONFIG}:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-dev-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-infratest-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-management-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-production-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-test-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-02-innovation-shared/kubeconfig.canadacentral.json"
 {{ end }}
 
 {{ end }}
@@ -79,6 +84,6 @@ alias h='history -i'
 
 {{ if (and (.kubernetes) (.work)) }}
 # Kubernetes Cloud Workstation Config
-export KUBECONFIG="${KUBECONFIG}:$HOME/.kube/k8s-cancentral-01-dev-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-infratest-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-management-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-production-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-test-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-02-innovation-shared/kubeconfig.canadacentral.json"
+export KUBECONFIG="${KUBECONFIG}:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-dev-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-infratest-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-management-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-production-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-test-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-02-innovation-shared/kubeconfig.canadacentral.json"
 {{ end }}
 
