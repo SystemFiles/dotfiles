@@ -81,8 +81,3 @@ export HISTFILESIZE=99999
 export LESS='-j5 R'
 alias h='history -i'
 
-{{ if (and (.kubernetes) (.work)) }}
-# Kubernetes Cloud Workstation Config
-export KUBECONFIG="${KUBECONFIG}:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-dev-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-infratest-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-management-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-production-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-test-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-02-innovation-shared/kubeconfig.canadacentral.json"
-{{ end }}
-
