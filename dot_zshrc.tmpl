@@ -69,7 +69,6 @@ alias kl='kubelogin convert-kubeconfig'
 if [[ -z $KUBECONFIG ]]; then
   export KUBECONFIG={{ .chezmoi.homeDir }}/.kube/config
 fi
-export KUBECONFIGS="${KUBECONFIG}:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-dev-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-infratest-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-management-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-production-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-01-test-shared/kubeconfig.canadacentral.json:{{ .chezmoi.homeDir }}/.kube/k8s-cancentral-02-innovation-shared/kubeconfig.canadacentral.json"
 {{ end }}
 
 {{ end }}
