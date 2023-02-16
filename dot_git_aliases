@@ -1,0 +1,4 @@
+alias gco='git checkout'
+alias gt='git tag'
+alias decorate='git log --all --graph --decorate --oneline --simplify-by-decoration'
+alias gs='git status -v'

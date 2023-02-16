@@ -1,0 +1,5 @@
+alias h='history -i'
+alias hg='history -i | grep -i '
+alias f='find . | grep -i '
+alias ls='ls -CHG -color'
+alias mkdir='mkdir -pv'

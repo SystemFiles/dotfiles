@@ -68,6 +68,7 @@ fi
 # Includes
 # ---------------------------------------------------------------------------------
 
+[ -f {{ .chezmoi.homeDir }}/.git_aliases ] && source {{ .chezmoi.homeDir }}/.git_aliases
 [ -f {{ .chezmoi.homeDir }}/.bash_aliases ] && source {{ .chezmoi.homeDir }}/.bash_aliases
 [ -f {{ .chezmoi.homeDir }}/.bash_exports ] && source {{ .chezmoi.homeDir }}/.bash_exports
 [ -f {{ .chezmoi.homeDir }}/.bash_functions ] && source {{ .chezmoi.homeDir }}/.bash_functions
@@ -79,5 +80,4 @@ fi
 export HISTSIZE=99999
 export HISTFILESIZE=99999
 export LESS='-j5 R'
-alias h='history -i'
 
