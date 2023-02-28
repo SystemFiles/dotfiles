@@ -1,0 +1,9 @@
+{{ if eq .chezmoi.os "linux" and .work }}
+#!/bin/bash
+
+set -eufo pipefail
+
+git clone https://gitlab.com/gitlab-org/cli.git /tmp/glab
+cd /tmp/glab && make install; cd -
+
+{{ end }}
