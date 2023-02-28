@@ -3,7 +3,9 @@
 
 set -eufo pipefail
 
-git clone https://gitlab.com/gitlab-org/cli.git /tmp/glab
-cd /tmp/glab && make install; cd -
+if [[ ! $(command -v glab) ]]; then
+  git clone https://gitlab.com/gitlab-org/cli.git /tmp/glab
+  cd /tmp/glab && make install; cd -;
+fi
 
 {{ end }}
