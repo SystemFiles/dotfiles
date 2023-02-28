@@ -35,6 +35,11 @@
 {{-   $git_user = promptString "Git full-name/username for the author/committer" -}}
 {{- end -}}
 
+{{- $git_username := get . "git_username" -}}
+{{- if not $git_username -}}
+{{-   $git_username = promptString "Git login-formatted username for the Gitlab remote" -}}
+{{- end -}}
+
 {{- $kubernetes := get . "kubernetes" -}}
 {{- if not $kubernetes -}}
 {{-   $kubernetes = promptBool "Is this machine used for Kubernetes work" -}}
@@ -58,12 +63,13 @@
 {{- $personal := not $work -}}
 
 [data]
-  email      = {{ $email | quote }}
-  git_user   = {{ $git_user | quote }}
-  work       = {{ $work }}
-  glab_token = {{ $glab_token | quote }}
-  glab_host  = {{ $glab_host | quote }}
-  headless   = {{ $headless }}
-  hostname   = {{ $hostname | quote }}
-  kubernetes = {{ $kubernetes }}
-  personal   = {{ $personal }}
+  email        = {{ $email | quote }}
+  git_user     = {{ $git_user | quote }}
+  git_username = {{ $git_username | quote }}
+  work         = {{ $work }}
+  glab_token   = {{ $glab_token | quote }}
+  glab_host    = {{ $glab_host | quote }}
+  headless     = {{ $headless }}
+  hostname     = {{ $hostname | quote }}
+  kubernetes   = {{ $kubernetes }}
+  personal     = {{ $personal }}
