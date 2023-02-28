@@ -45,12 +45,24 @@
 {{-   $work = promptBool "Is this a work computer" -}}
 {{- end -}}
 
+{{- $glab_token := get . "glab_token" -}}
+{{- if not $glab_token -}}
+{{-   $glab_token = promptString "Gitlab Auth Token" -}}
+{{- end -}}
+
+{{- $glab_host := get . "glab_host" -}}
+{{- if not $glab_host -}}
+{{-   $glab_host = promptString "Gitlab Host (do not include protocol)" -}}
+{{- end -}}
+
 {{- $personal := not $work -}}
 
 [data]
   email      = {{ $email | quote }}
   git_user   = {{ $git_user | quote }}
   work       = {{ $work }}
+  glab_token = {{ $glab_token | quote }}
+  glab_host  = {{ $glab_host | quote }}
   headless   = {{ $headless }}
   hostname   = {{ $hostname | quote }}
   kubernetes = {{ $kubernetes }}

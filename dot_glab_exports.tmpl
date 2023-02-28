@@ -1,0 +1,23 @@
+{{ if (and (ne .glab_host "") (ne .glab_token "")) -}}
+
+# install command completions
+source <(glab completion zsh)
+
+# configure environment
+export GITLAB_HOST="{{ .glab_host }}"
+export GITLAB_TOKEN="{{ .glab_token }}"
+export NO_PROMPT=1
+
+# useful aliases
+alias glmrc='glab mr create --squash-before-merge -a {{ .git_user }}'
+alias glmrv='glab mr view'
+alias glreview='glab mr update --reviewer {{ .git_user }} 
+alias glmrapp='glab mr approve'
+alias glmrappfull='glmrapp && glab mr update --unlabel review/required --label review/approved'
+alias glmrco='glab mr checkout'
+alias glmrdraft='glab mr update --draft'
+alias glmrready='glab mr update --ready'
+alias glmrlab='glab mr update --label'
+alias glmrunlab='glab mr update --unlabel'
+
+{{ end }}
