@@ -9,6 +9,7 @@ export GITLAB_TOKEN="{{ .glab_token }}"
 export NO_PROMPT=1
 
 # useful aliases
+alias glhelp='alias | grep -iE --color=never "^gl.+$"'
 alias glmrc='glab mr create --squash-before-merge -a {{ .git_username }}'
 alias glmrv='glab mr view'
 alias glreview='glab mr update --reviewer {{ .git_user }}'
