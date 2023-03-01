@@ -12,13 +12,12 @@ export NO_PROMPT=1
 alias glhelp='alias | grep -iE --color=never "^gl.+$"'
 alias glmrc='glab mr create --squash-before-merge -a {{ .git_username }}'
 alias glmrv='glab mr view'
-alias glreview='glab mr update --reviewer {{ .git_user }}'
+alias glreview='glab mr update --reviewer {{ .git_username }}'
 alias glmrapp='glab mr approve'
-alias glmrappfull='glmrapp && glab mr update --unlabel review/required --label review/approved'
+alias glmrapprfull='glmrapp && glab mr update --unlabel review/required --label review/approved'
 alias glmrco='glab mr checkout'
 alias glmrdraft='glab mr update --draft'
 alias glmrready='glab mr update --ready'
-alias glmrlab='glab mr update --label'
-alias glmrunlab='glab mr update --unlabel'
+alias glmru='glab mr update'
 
 {{ end }}
