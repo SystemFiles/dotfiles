@@ -1,0 +1,17 @@
+Include config.d/*
+
+# disable that annoying host-key checking crap
+StrictHostKeyChecking no
+
+{{- if .personal }}
+# Lab
+Host 10.35.1.* !10.35.1.2
+   User lnxadm
+{{- end }}
+
+# All
+Host *
+   LogLevel INFO
+   Compression yes
+   ServerAliveInterval 15
+   CanonicalizeHostname yes
