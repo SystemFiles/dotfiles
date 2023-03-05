@@ -93,7 +93,11 @@
     email = "{{ .email }}"
 
     # Specify the name/username of the author/committer.
+    {{- if not .git_user }}
+    name = "{{ .git_username }}"
+    {{ else }}
     name = "{{ .git_user }}"
+    {{- end }}
 
 [credential]
     helper = store
