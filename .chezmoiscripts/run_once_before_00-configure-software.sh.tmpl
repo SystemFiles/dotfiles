@@ -34,7 +34,7 @@ sudo yum install -y --skip-broken ${requirements[@]}
 {{ end }}
 
 # Set ZSH as default SHELL
-chsh -s $(which zsh)
+sudo chsh -s $(which zsh)
 
 # Install GO from Source (package managers are usually quite a bit behind)
 # -------------------------------------------------------------------
