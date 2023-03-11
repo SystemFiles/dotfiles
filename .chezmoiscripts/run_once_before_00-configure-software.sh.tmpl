@@ -6,7 +6,7 @@ set -eufo pipefail
 # Install software from package managers
 # -------------------------------------------------------------------
 {{ if eq .chezmoi.os "linux" }}
-{{ if eq .chezmoi.osRelease.id "debian" }}
+{{ if eq .chezmoi.osRelease.id "debian" "ubuntu" }}
 requirements=(
   git
   curl
@@ -63,7 +63,7 @@ fi
 # -------------------------------------------------------------------
 {{ if eq .chezmoi.os "linux" }}
 echo "INSTALLING VSCODE ..."
-{{ if eq .chezmoi.osRelease.id "debian" }}
+{{ if eq .chezmoi.osRelease.id "debian" "ubuntu" }}
 echo "INSTALLING VSCODE IN DEBIAN"
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
 sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
