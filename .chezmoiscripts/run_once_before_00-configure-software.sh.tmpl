@@ -1,0 +1,90 @@
+{{ if eq .chezmoi.os "darwin" "linux" -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+# Install software from package managers
+# -------------------------------------------------------------------
+{{- if eq .chezmoi.os "linux" }}
+{{ if eq .chezmoi.osRelease.id "debian" }}
+requirements=(
+  git
+  curl
+  openssl
+  wget
+  htop
+  jq
+  build-essential
+)
+sudo apt install -y --ignore-missing ${requirements[@]}
+{{ else if eq .chezmoi.osRelease.id "fedora" }}
+requirements=(
+  git
+  curl
+  openssl
+  wget
+  htop
+  jq
+)
+sudo yum group install "Development Tools"
+sudo yum install -y --skip-broken ${requirements[@]}
+{{ end }}
+{{ end }}
+{{- if eq .chezmoi.os "darwin" }}
+
+{{ end }}
+
+# Install GO from Source (package managers are usually quite a bit behind)
+# -------------------------------------------------------------------
+
+# we can assume `curl` is available since it is required part of initialization logic for chezmoi
+GO_VERSION=1.20.1
+
+{{ if eq .chezmoi.os "linux" -}}
+curl -SL -o /tmp/go-install.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -zxvf /tmp/go-install.tar.gz
+{{ else if eq .chezmoi.os "darwin" }}
+curl -sSL -o /tmp/go-install.pkg https://go.dev/dl/go1.20.1.darwin-amd64.pkg
+sudo installer -pkg /tmp/go-install.pkg -target /
+{{ end }}
+
+export PATH=$PATH:/usr/local/go/bin
+packages=(
+  github.com/kisielk/errcheck@latest
+  golang.org/x/tools/cmd/goimports@latest
+  github.com/go-delve/delve/cmd/dlv@latest
+  honnef.co/go/tools/cmd/staticcheck@latest
+)
+
+if [[ $(command -v go) ]]; then
+for package in ${packages[@]}; do
+  go install $package
+done
+else
+  echo "[WARN] did not install GO"
+fi
+
+# Install VSCode
+# -------------------------------------------------------------------
+{{ if eq .chezmoi.os "linux" }}
+if [[ ! $(command -v code) ]]; then
+  {{ if eq .chezmoi.osRelease.id "debian" }}
+  wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+  sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+  sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+  rm -f packages.microsoft.gpg
+  sudo apt install apt-transport-https
+  sudo apt update
+  sudo apt install code
+  {{ else if eq .chezmoi.osRelease.id "fedora" }}
+  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+  yum check-update
+  sudo yum install code
+  {{ end }}
+fi
+{{ else if eq chezmoi.os "darwin" }}
+curl -sSL -o {{ .chezmoi.homeDir }}/Downloads/vscode.zip && unzip {{ .chezmoi.homeDir }}/Downloads/vscode.zip -d {{ .chezmoi.homeDir }}/Downloads/
+cp {{ .chezmoi.homeDir }}/Downloads/Visual\ Studio\ Code.app /Applications/
+{{ end }}
+{{ end }}
