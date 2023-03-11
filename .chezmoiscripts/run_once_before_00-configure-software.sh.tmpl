@@ -8,6 +8,7 @@ set -eufo pipefail
 {{ if eq .chezmoi.os "linux" }}
 {{ if eq .chezmoi.osRelease.id "debian" "ubuntu" }}
 requirements=(
+  zsh
   git
   curl
   openssl
@@ -19,6 +20,7 @@ requirements=(
 sudo apt install -y --ignore-missing ${requirements[@]}
 {{ else if eq .chezmoi.osRelease.id "fedora" }}
 requirements=(
+  zsh
   git
   curl
   openssl
@@ -30,6 +32,9 @@ sudo yum group install "Development Tools"
 sudo yum install -y --skip-broken ${requirements[@]}
 {{ end }}
 {{ end }}
+
+# Set ZSH as default SHELL
+chsh -s $(which zsh)
 
 # Install GO from Source (package managers are usually quite a bit behind)
 # -------------------------------------------------------------------
