@@ -5,7 +5,7 @@ set -eufo pipefail
 
 # Install software from package managers
 # -------------------------------------------------------------------
-{{- if eq .chezmoi.os "linux" }}
+{{ if eq .chezmoi.os "linux" }}
 {{ if eq .chezmoi.osRelease.id "debian" }}
 requirements=(
   git
@@ -30,9 +30,6 @@ sudo yum group install "Development Tools"
 sudo yum install -y --skip-broken ${requirements[@]}
 {{ end }}
 {{ end }}
-{{- if eq .chezmoi.os "darwin" }}
-
-{{ end }}
 
 # Install GO from Source (package managers are usually quite a bit behind)
 # -------------------------------------------------------------------
@@ -44,7 +41,7 @@ GO_VERSION=1.20.1
 curl -SL -o /tmp/go-install.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
 sudo rm -rf /usr/local/go && sudo tar -C /usr/local -zxvf /tmp/go-install.tar.gz
 {{ else if eq .chezmoi.os "darwin" }}
-curl -sSL -o /tmp/go-install.pkg https://go.dev/dl/go1.20.1.darwin-amd64.pkg
+curl -sSL -o /tmp/go-install.pkg https://go.dev/dl/go${GO_VERSION}.darwin-amd64.pkg
 sudo installer -pkg /tmp/go-install.pkg -target /
 {{ end }}
 
