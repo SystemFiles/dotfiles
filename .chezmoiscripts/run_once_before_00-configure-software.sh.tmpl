@@ -57,32 +57,28 @@ packages=(
 )
 
 if [[ $(command -v go) ]]; then
-for package in ${packages[@]}; do
-  go install $package
-done
-else
-  echo "[WARN] did not install GO"
+  for package in ${packages[@]}; do
+    go install $package
+  done
 fi
 
 # Install VSCode
 # -------------------------------------------------------------------
 {{ if eq .chezmoi.os "linux" }}
-if [[ ! $(command -v code) ]]; then
-  {{ if eq .chezmoi.osRelease.id "debian" }}
-  wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-  sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-  sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
-  rm -f packages.microsoft.gpg
-  sudo apt install apt-transport-https
-  sudo apt update
-  sudo apt install code
-  {{ else if eq .chezmoi.osRelease.id "fedora" }}
-  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-  sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-  yum check-update
-  sudo yum install code
-  {{ end }}
-fi
+{{ if eq .chezmoi.osRelease.id "debian" }}
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+rm -f packages.microsoft.gpg
+sudo apt install apt-transport-https
+sudo apt update
+sudo apt install code
+{{ else if eq .chezmoi.osRelease.id "fedora" }}
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+yum check-update
+sudo yum install code
+{{ end }}
 {{ else if eq .chezmoi.os "darwin" }}
 curl -sSL -o {{ .chezmoi.homeDir }}/Downloads/vscode.zip && unzip {{ .chezmoi.homeDir }}/Downloads/vscode.zip -d {{ .chezmoi.homeDir }}/Downloads/
 cp {{ .chezmoi.homeDir }}/Downloads/Visual\ Studio\ Code.app /Applications/
