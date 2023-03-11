@@ -7,7 +7,7 @@ if [[ ! $(command -v glab) ]]; then
   if [[ ! -d /tmp/glab ]]; then
     git clone https://gitlab.com/gitlab-org/cli.git /tmp/glab
   fi
-  cd /tmp/glab && make install; cd -;
+  cd /tmp/glab && PATH=$PATH:/usr/local/go/bin make install; cd -;
 fi
 
 {{ end }}
