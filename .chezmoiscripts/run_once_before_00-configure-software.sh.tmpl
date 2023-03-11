@@ -83,7 +83,7 @@ if [[ ! $(command -v code) ]]; then
   sudo yum install code
   {{ end }}
 fi
-{{ else if eq chezmoi.os "darwin" }}
+{{ else if eq .chezmoi.os "darwin" }}
 curl -sSL -o {{ .chezmoi.homeDir }}/Downloads/vscode.zip && unzip {{ .chezmoi.homeDir }}/Downloads/vscode.zip -d {{ .chezmoi.homeDir }}/Downloads/
 cp {{ .chezmoi.homeDir }}/Downloads/Visual\ Studio\ Code.app /Applications/
 {{ end }}
