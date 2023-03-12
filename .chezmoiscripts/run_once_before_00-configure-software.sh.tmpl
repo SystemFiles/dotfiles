@@ -9,6 +9,7 @@ set -eufo pipefail
 {{ if eq .chezmoi.osRelease.id "debian" "ubuntu" }}
 requirements=(
   zsh
+  vim
   git
   curl
   openssl
@@ -21,6 +22,7 @@ sudo apt install -y --ignore-missing ${requirements[@]}
 {{ else if eq .chezmoi.osRelease.id "fedora" }}
 requirements=(
   zsh
+  vim
   git
   curl
   openssl
