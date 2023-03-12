@@ -37,9 +37,6 @@ sudo yum install -y --skip-broken ${requirements[@]}
 {{ end }}
 {{ end }}
 
-# Set ZSH as default SHELL
-sudo chsh -s $(which zsh)
-
 # Install GO from Source (package managers are usually quite a bit behind)
 # -------------------------------------------------------------------
 GO_VERSION=1.20.1
@@ -83,9 +80,5 @@ sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.m
 yum check-update
 sudo yum install -y code
 {{ end }}
-export PATH=$PATH:/
-{{ else if eq .chezmoi.os "darwin" }}
-curl -sSL -o {{ .chezmoi.homeDir }}/Downloads/vscode.zip && unzip {{ .chezmoi.homeDir }}/Downloads/vscode.zip -d {{ .chezmoi.homeDir }}/Downloads/
-cp {{ .chezmoi.homeDir }}/Downloads/Visual\ Studio\ Code.app /Applications/
 {{ end }}
 {{ end }}
