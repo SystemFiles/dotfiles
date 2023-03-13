@@ -1,0 +1,4 @@
+{{ if and (and (eq .chezmoi.os "linux") (not .headless)) .work -}}
+#!/bin/bash
+gsettings set org.gnome.desktop.session idle-delay 0
+{{ end }}
