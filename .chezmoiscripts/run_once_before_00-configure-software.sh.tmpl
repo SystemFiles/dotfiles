@@ -43,13 +43,13 @@ GO_VERSION=1.20.1
 
 {{ if eq .chezmoi.os "linux" -}}
 curl -SL -o /tmp/go-install.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
-sudo rm -rf /usr/local/go && sudo tar -C /usr/local -zxvf /tmp/go-install.tar.gz
+rm -rf {{ .chezmoi.homeDir }}/go && tar -C {{ .chezmoi.homeDir }}/go -zxvf /tmp/go-install.tar.gz && rm /tmp/go-install.tar.gz
 {{ else if eq .chezmoi.os "darwin" }}
 curl -sSL -o /tmp/go-install.pkg https://go.dev/dl/go${GO_VERSION}.darwin-amd64.pkg
-sudo installer -pkg /tmp/go-install.pkg -target /
+sudo installer -pkg /tmp/go-install.pkg -target / && rm /tmp/go-install.pkg
 {{ end }}
 
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:{{ .chezmoi.homeDir }}/go/bin
 packages=(
   github.com/kisielk/errcheck@latest
   golang.org/x/tools/cmd/goimports@latest
@@ -61,18 +61,14 @@ if [[ $(command -v go) ]]; then
   for package in ${packages[@]}; do
     go install $package
   done
+else
+  echo "[ERROR] GO was not installed correctly"
 fi
 
-# Install VSCode
+# Install VSCode (only on GUI Linux)
 # -------------------------------------------------------------------
-{{ if eq .chezmoi.os "linux" }}
+{{ if and (eq .chezmoi.os "linux") (not .headless) }}
 {{ if eq .chezmoi.osRelease.id "debian" "ubuntu" }}
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
-rm -f packages.microsoft.gpg
-sudo apt install -y apt-transport-https
-sudo apt update
 sudo apt install -y code
 {{ else if eq .chezmoi.osRelease.id "fedora" }}
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
