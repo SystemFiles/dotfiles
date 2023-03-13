@@ -56,6 +56,10 @@ sudo installer -pkg /tmp/go-install.pkg -target / && rm /tmp/go-install.pkg
 
 export PATH=$PATH:{{ .chezmoi.homeDir }}/go/bin
 packages=(
+  github.com/cweill/gotests@v1.6.0
+  github.com/fatih/gomodifytags@v1.16.0
+  github.com/josharian/impl@v1.1.0
+  golang.org/x/tools/gopls@latest
   github.com/kisielk/errcheck@latest
   golang.org/x/tools/cmd/goimports@latest
   github.com/go-delve/delve/cmd/dlv@latest
