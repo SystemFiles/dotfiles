@@ -43,7 +43,7 @@ GO_VERSION=1.20.1
 
 {{ if eq .chezmoi.os "linux" -}}
 curl -SL -o /tmp/go-install.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
-rm -rf {{ .chezmoi.homeDir }}/go && tar -C {{ .chezmoi.homeDir }}/go -zxvf /tmp/go-install.tar.gz && rm /tmp/go-install.tar.gz
+sudo rm -rf {{ .chezmoi.homeDir }}/go && tar -C {{ .chezmoi.homeDir }}/go -zxvf /tmp/go-install.tar.gz && rm /tmp/go-install.tar.gz
 {{ else if eq .chezmoi.os "darwin" }}
 curl -sSL -o /tmp/go-install.pkg https://go.dev/dl/go${GO_VERSION}.darwin-amd64.pkg
 sudo installer -pkg /tmp/go-install.pkg -target / && rm /tmp/go-install.pkg
