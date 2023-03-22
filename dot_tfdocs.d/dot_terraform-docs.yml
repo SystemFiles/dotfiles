@@ -18,12 +18,6 @@ content: |-
 
   {{ .Outputs }}
 
-  ## Examples
-
-  ```hcl
-  {{ include "examples/standard.tf" }}
-  ```
-
 output:
   file: ""
   mode: inject
