@@ -63,13 +63,14 @@
 {{- $personal := not $work -}}
 
 [data]
-  email        = {{ $email | quote }}
-  git_user     = {{ $git_user | quote }}
-  git_username = {{ $git_username | quote }}
-  work         = {{ $work }}
-  glab_token   = {{ $glab_token | quote }}
-  glab_host    = {{ $glab_host | quote }}
-  headless     = {{ $headless }}
-  hostname     = {{ $hostname | quote }}
-  kubernetes   = {{ $kubernetes }}
-  personal     = {{ $personal }}
+  email             = {{ $email | quote }}
+  git_user          = {{ $git_user | quote }}
+  git_username      = {{ $git_username | quote }}
+  work              = {{ $work }}
+  glab_token        = {{ $glab_token | quote }}
+  glab_host         = {{ $glab_host | quote }}
+  headless          = {{ $headless }}
+  hostname          = {{ $hostname | quote }}
+  kubernetes        = {{ $kubernetes }}
+  personal          = {{ $personal }}
+  pre_commit_common = {{ "LSByZXBvOiBodHRwczovL2dpdGh1Yi5jb20vcHJlLWNvbW1pdC9wcmUtY29tbWl0LWhvb2tzCiAgcmV2OiB2NC4zLjAKICBob29rczoKICAgIC0gaWQ6IHRyYWlsaW5nLXdoaXRlc3BhY2UKICAgIC0gaWQ6IGVuZC1vZi1maWxlLWZpeGVyCiAgICAtIGlkOiBjaGVjay10b21sCiAgICAtIGlkOiBjaGVjay14bWwKICAgIC0gaWQ6IGNoZWNrLXlhbWwK" | b64dec | quote }}

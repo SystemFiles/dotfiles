@@ -1,14 +1,5 @@
 repos:
-- repo: https://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.77.1
-  hooks:
-    - id: terraform_fmt
-    - id: terraform_docs
-      args:
-        - --hook-config=--config=
-        - --hook-config=--add-to-existing-file=true
-        - --hook-config=--create-file-if-not-exist=true
-repos:
+{{ .pre_commit_common -}}
 - repo: https://github.com/antonbabenko/pre-commit-terraform
   rev: v1.77.1
   hooks:
