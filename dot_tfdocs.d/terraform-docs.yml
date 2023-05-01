@@ -1,10 +1,8 @@
 formatter: "markdown table"
 header-from: main.tf
-
 sort:
   enabled: true
   by: required
-
 output:
   file: README.md
   mode: inject
@@ -13,28 +11,33 @@ output:
     {{ .Content }}
     <!-- END_TF_DOCS -->
 
+content: |-
+    {{ .Requirements }}
+
+    {{ .Providers }}
+
+    {{ .Modules }}
+
+    {{ .Inputs }}
+
+    {{ .Outputs }}
+
 sections:
   show:
     - requirements
+    - providers
+    - modules
     - inputs
     - outputs
-
-content: |-
-  {{ .Requirements }}
-
-  {{ .Inputs }}
-
-  {{ .Outputs }}
 
 settings:
   anchor: true
   color: true
   default: true
-  description: false
-  escape: true
-  hide-empty: false
+  type: true
   indent: 2
   read-comments: true
   required: true
-  sensitive: true
-  type: true
+  description: false
+  escape: true
+  hide-empty: true

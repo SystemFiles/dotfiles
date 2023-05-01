@@ -5,6 +5,16 @@ repos:
     - id: terraform_fmt
     - id: terraform_docs
       args:
-        - --hook-config=--config={{ .chezmoi.homeDir }}/.tfdocs.d/terraform-docs.yml
+        - --hook-config=--config=
         - --hook-config=--add-to-existing-file=true
         - --hook-config=--create-file-if-not-exist=true
+repos:
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.77.1
+  hooks:
+    - id: terraform_fmt
+- repo: https://github.com/terraform-docs/terraform-docs
+  rev: "v0.16.0"
+  hooks:
+    - id: terraform-docs-go
+      args: ["markdown", "table", "--output-file", "README.md", "--config", "{{ .chezmoi.homeDir }}/.tfdocs.d/terraform-docs.yml", "."]
