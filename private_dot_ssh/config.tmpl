@@ -4,8 +4,8 @@ Include config.d/*
 StrictHostKeyChecking no
 
 {{- if .personal }}
-# Lab
-Host 10.35.1.* !10.35.1.2
+# Homelab Network Prefix
+Host 172.99.*.* !10.35.1.2
    User lnxadm
 {{- end }}
 
