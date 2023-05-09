@@ -1,5 +1,11 @@
 alias h='history -i'
 alias hg='history -i | grep -i '
 alias f='find . | grep -i '
-alias ls='ls -CHG -color'
 alias mkdir='mkdir -pv'
+
+# setup exa alias to 'ls' if exa is installed
+if [[ $(command -v exa) ]]; then
+  alias ls='exa --icons --group-directories-first --long --git'
+else
+  alias ls='ls -CHG -color'
+fi
