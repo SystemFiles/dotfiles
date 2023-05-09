@@ -24,6 +24,7 @@ export PATH={{ .chezmoi.homeDir }}/bin:$PATH
 export ZSH={{ .chezmoi.homeDir }}/.oh-my-zsh
 
 plugins=(
+  zsh-completions
   colored-man-pages
   docker
   docker-compose
@@ -95,5 +96,4 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 
 [ -f {{ .chezmoi.homeDir }}/.zsh_completions ] && fpath=({{ .chezmoi.homeDir }}/.zsh_completions $fpath)
 
-autoload -Uz compinit
-compinit
+autoload -U compinit && compinit
