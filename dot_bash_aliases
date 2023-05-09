@@ -6,6 +6,7 @@ alias mkdir='mkdir -pv'
 # setup exa alias to 'ls' if exa is installed
 if [[ $(command -v exa) ]]; then
   alias ls='exa --group-directories-first --long --git --header --group'
+  alias lst='exa --group-directories-first --long --git --header --group --tree --level=4'
 else
   alias ls='ls -CHG -color'
 fi
