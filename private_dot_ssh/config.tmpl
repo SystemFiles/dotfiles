@@ -12,9 +12,11 @@ Host 172.20.*.* !10.35.1.2
 # All
 Host *
    LogLevel INFO
-   Compression yes
+   GSSAPIAuthentication no
+   ChallengeResponseAuthentication no
    ServerAliveInterval 15
    CanonicalizeHostname yes
    ControlMaster auto
    ControlPersist 15m
    ControlPath {{ .chezmoi.homeDir }}/.ssh/S.%r@%h:%p
+
