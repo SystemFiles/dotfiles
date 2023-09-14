@@ -54,10 +54,10 @@ brew "bash"
 brew "bash-completion"
 {{- end }}
 
-# 'brew install --cask'
-cask "font-hack-nerd-font"
 
 {{- if not .headless }}
-# install vscode
+# 'brew install --cask'
 cask "visual-studio-code"
+cask "font-hack-nerd-font"
 {{- end }}
+
