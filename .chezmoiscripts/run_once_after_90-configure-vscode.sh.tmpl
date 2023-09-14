@@ -4,20 +4,28 @@
 set -eufo pipefail
 
 extensions=(
+  hashicorp.terraform
+  4ops.packer
   editorconfig.editorconfig
+  monokai.theme-monokai-pro-vscode
   esbenp.prettier-vscode
   golang.go
-  hashicorp.terraform
-  dracula-theme.theme-dracula
-  4ops.terraform
-  4ops.packer
-  pkief.material-icon-theme
   rust-lang.rust-analyzer
-  tomaciazek.ansible
-  vscodevim.vim
+  redhat.ansible
+  redhat.vscode-commons
+  redhat.vscode-yaml
+  asvetliakov.vscode-neovim
   yzhang.markdown-all-in-one
   oderwat.indent-rainbow
-  SirTori.indenticator
+  sirtori.indenticator
+  ms-kubernetes-tools.vscode-kubernetes-tools
+  amazonwebservices.aws-toolkit-vscode
+  aaron-bond.better-comments
+  christian-kohler.path-intellisense
+  jinliming2.vscode-go-template
+  tamasfe.even-better-toml
+  vue.volar
+  wayou.vscode-todo-highlight
 )
 
 for extension in ${extensions[@]}; do

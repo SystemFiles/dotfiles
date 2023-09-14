@@ -1,12 +1,12 @@
 Include config.d/*
 
-# disable that annoying host-key checking crap
-StrictHostKeyChecking no
-
 {{- if .personal }}
 # Homelab Network Prefix
 Host 172.20.*.* !10.35.1.2
-   User lnxadm
+  User lnxadm
+# Homelab Network Prefix (IP6)
+Host 2600:70ff:b808:* 2001:470:1f2f:1e::*
+  User lnxadm
 {{- end }}
 
 # All
@@ -14,6 +14,7 @@ Host *
    LogLevel INFO
    GSSAPIAuthentication no
    ChallengeResponseAuthentication no
+   StrictHostKeyChecking no
    ServerAliveInterval 15
    CanonicalizeHostname yes
    ControlMaster auto

@@ -1,7 +1,16 @@
+# general system aliases
 alias h='history -i'
 alias hg='history -i | grep -i '
 alias f='find . | grep -i '
 alias mkdir='mkdir -pv'
+
+# setup vim alias -> neovim if available
+if [[ $(command -v nvim) ]]; then
+  alias vi="nvim"
+  alias vim='nvim'
+  alias view="nvim -R"
+  alias vimdiff="nvim -d"
+fi
 
 # setup exa alias to 'ls' if exa is installed
 if [[ $(command -v exa) ]]; then
