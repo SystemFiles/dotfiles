@@ -1,24 +1,24 @@
 [".oh-my-zsh"]
-    type = "archive"
-    url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
-    exact = true
-    stripComponents = 1
-    refreshPeriod = "168h"
+type = "archive"
+url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
 
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
-    type = "archive"
-    url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
-    exact = true
-    stripComponents = 1
-    refreshPeriod = "168h"
+type = "archive"
+url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
 
 [".oh-my-zsh/custom/themes/021011"]
-    type = "archive"
-    url = "https://github.com/guesswhozzz/021011.zsh-theme/archive/2.0.0.tar.gz"
-    exact = true
-    stripComponents = 1
+type = "archive"
+url = "https://github.com/guesswhozzz/021011.zsh-theme/archive/2.0.0.tar.gz"
+exact = true
+stripComponents = 1
 
 [".gittools"]
-    type = "git-repo"
-    url = "https://github.com/SystemFiles/git-toolkit.git"
-    refreshPeriod = "168h"
+type = "git-repo"
+url = "https://github.com/SystemFiles/git-toolkit.git"
+refreshPeriod = "168h"

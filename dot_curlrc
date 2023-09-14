@@ -1,0 +1,27 @@
+# ~/.curlrc
+
+# =============================================================================
+
+# Allows you to write command-line options in a text file instead and then
+
+# tell curl to read options from that file in addition to the command line.
+
+#
+
+# Reference: https://everything.curl.dev/cmdline/configfile
+
+# Set the maximum time in seconds to allow cURL's connection to take.
+
+connect-timeout = 5
+
+# Follow `Location:` headers and 3XX response codes.
+
+location
+
+# Set the previous URL automatically when following a `Location:` header.
+
+referer = ";auto"
+
+# Use the server-provided timestamp, if any.
+
+remote-time
