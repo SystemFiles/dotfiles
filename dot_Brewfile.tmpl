@@ -49,11 +49,6 @@ brew "terraform-ls"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
-{{- if eq .chezmoi.os "darwin" }}
-brew "bash"
-brew "bash-completion"
-{{- end }}
-
 
 {{- if not .headless }}
 # 'brew install --cask'
