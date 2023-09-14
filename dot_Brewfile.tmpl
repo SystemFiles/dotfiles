@@ -24,7 +24,6 @@ brew "docker"
 brew "docker-compose"
 brew "etcd"
 brew "findutils"
-brew "font-hack-nerd-font"
 brew "gcc"
 brew "gdbm"
 brew "git"
@@ -53,10 +52,12 @@ brew "zsh-syntax-highlighting"
 {{- if eq .chezmoi.os "darwin" }}
 brew "bash"
 brew "bash-completion"
-brew "dockutil"
 {{- end }}
 
-{{- if not .headless }}
 # 'brew install --cask'
+cask "font-hack-nerd-font"
+
+{{- if not .headless }}
+# install vscode
 cask "visual-studio-code"
 {{- end }}
