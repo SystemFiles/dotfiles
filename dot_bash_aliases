@@ -19,3 +19,13 @@ if [[ $(command -v exa) ]]; then
 else
   alias ls='ls -CHG -color'
 fi
+
+# devcontainers (CLI) shortcuts
+if [[ $(command -v devcontainers) ]]; then
+	alias dc='devcontainer'
+	alias dcup='devcontainer up --workspace-folder .'
+	alias dcconfig='devcontainer read-configuration --workspace-folder .'
+	alias dcexec='devcontainer exec --workspace-folder .'
+	alias dcshell='devcontainer exec --workspace-folder . bash'
+fi
+
