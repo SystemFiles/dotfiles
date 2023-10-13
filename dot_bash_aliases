@@ -21,11 +21,11 @@ else
 fi
 
 # devcontainers (CLI) shortcuts
-if [[ $(command -v devcontainers) ]]; then
-	alias dc='devcontainer'
-	alias dcup='devcontainer up --workspace-folder .'
-	alias dcconfig='devcontainer read-configuration --workspace-folder .'
-	alias dcexec='devcontainer exec --workspace-folder .'
-	alias dcshell='devcontainer exec --workspace-folder . bash'
+if [[ $(command -v devcontainer) ]]; then
+	alias dct='devcontainer'
+	alias dctup='devcontainer up --workspace-folder .'
+	alias dctconfig='devcontainer read-configuration --workspace-folder .'
+	alias dctexec='devcontainer exec --workspace-folder .'
+	alias dctshell='devcontainer exec --workspace-folder . bash'
 fi
 
