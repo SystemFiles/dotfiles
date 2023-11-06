@@ -14,10 +14,3 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply SystemFiles
 ```sh
 ~/.local/share/chezmoi
 ```
-
-## Acknowledgements
-
-* https://github.com/mathiasbynens/dotfiles
-* https://github.com/renemarc/dotfiles
-* https://github.com/twpayne/dotfiles
-* https://github.com/sylus/dotfiles
