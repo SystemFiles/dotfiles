@@ -11,6 +11,9 @@ default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 TWOFISH CAMELL
 personal-digest-preferences SHA512 SHA384 SHA256 SHA224
 no-emit-version
 auto-key-retrieve
+
 {{- if .personal }}
 default-key 0453AC9CA9749DCCDC65044DB837AA41062A81EB
+{{- else if .work }}
+default-key E5F5911CFBB3801761BBA3F14956E4DBA40D9C93
 {{- end }}
