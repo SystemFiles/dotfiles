@@ -9,7 +9,6 @@ if [[ $(command -v glab) ]]; then
 	alias glhelp='alias | grep -iE --color=never "^gl.+$"'
 	alias glmrc='glab mr create --squash-before-merge --remove-source-branch -a {{ .git_username }}'
 	alias glmrv='glab mr view'
-	alias glreview='glab mr update --reviewer {{ .git_username }}'
 	alias glmrco='glab mr checkout'
 	alias glmrdraft='glab mr update --draft'
 	alias glmrready='glab mr update --ready'
