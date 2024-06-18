@@ -3,13 +3,7 @@ My personal dotfiles, managed with [`chezmoi`](https://github.com/twpayne/chezmo
 
 ## Installation
 
-### Linux
-
-```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply SystemFiles
-```
-
-### Post-Installation Steps
+### Pre-Installation Steps
 
 There are a few things (mostly software installs) that cannot easily be captured as part of this project.
 
@@ -21,6 +15,12 @@ bash <(curl -sSLf https://raw.githubusercontent.com/SystemFiles/software/master/
 
 ```bash
 task basics:install
+```
+
+### Install Dotfiles
+
+```sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply SystemFiles
 ```
 
 ## Install location

@@ -12,10 +12,10 @@ if [[ $(command -v nvim) ]]; then
   alias vimdiff="nvim -d"
 fi
 
-# setup exa alias to 'ls' if exa is installed
-if [[ $(command -v exa) ]]; then
-  alias ls='exa --group-directories-first --long --git --header --group'
-  alias lst='exa --group-directories-first --long --git --header --group --tree --level=4'
+# setup eza alias to 'ls' if eza is installed
+if [[ $(command -v eza) ]]; then
+  alias ls='eza --group-directories-first --long --git --header --group'
+  alias lst='eza --group-directories-first --long --git --header --group --tree --level=4'
 else
   alias ls='ls -CHG -color'
 fi
