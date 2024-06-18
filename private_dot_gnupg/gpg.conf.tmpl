@@ -13,7 +13,7 @@ no-emit-version
 auto-key-retrieve
 
 {{- if .personal }}
-default-key 0453AC9CA9749DCCDC65044DB837AA41062A81EB
+default-key {{ .personal_gpg_key }}
 {{- else if .work }}
-default-key E5F5911CFBB3801761BBA3F14956E4DBA40D9C93
+default-key {{ .work_gpg_key }}
 {{- end }}

@@ -1,36 +1,6 @@
 {{ if (and (eq .chezmoi.os "darwin" "linux") (not .headless)) -}}
-#!/bin/bash
 
-set -eufo pipefail
-
-extensions=(
-  hashicorp.terraform
-  4ops.packer
-  editorconfig.editorconfig
-  monokai.theme-monokai-pro-vscode
-  esbenp.prettier-vscode
-  golang.go
-  rust-lang.rust-analyzer
-  redhat.ansible
-  redhat.vscode-commons
-  redhat.vscode-yaml
-  asvetliakov.vscode-neovim
-  yzhang.markdown-all-in-one
-  oderwat.indent-rainbow
-  sirtori.indenticator
-  ms-kubernetes-tools.vscode-kubernetes-tools
-  amazonwebservices.aws-toolkit-vscode
-  aaron-bond.better-comments
-  christian-kohler.path-intellisense
-  jinliming2.vscode-go-template
-  tamasfe.even-better-toml
-  vue.volar
-  wayou.vscode-todo-highlight
-)
-
-for extension in ${extensions[@]}; do
-  code --force --install-extension $extension
-done
+if [[ "$(command -v code)" ]]; then
 
 {{ if (eq .chezmoi.os "darwin") }}
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
@@ -43,5 +13,7 @@ if ! grep -qF fs.inotify.max_user_watches=524288 /etc/sysctl.conf; then
   sudo sysctl -p
 fi
 {{ end }}
+
+fi
 
 {{ end }}

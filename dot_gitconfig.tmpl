@@ -116,14 +116,10 @@
     {{- end }}
 
     {{- if .personal }}
-    # Signing Key
-    signingkey = "0453AC9CA9749DCCDC65044DB837AA41062A81EB"
+    signingkey = {{ .personal_gpg_key }}
+    {{- else }}
+    signingkey = {{ .work_gpg_key }}
     {{- end }}
-
-		{{- if .work }}
-    # Signing Key (Work)
-    signingkey = "E5F5911CFBB3801761BBA3F14956E4DBA40D9C93"
-		{{- end}}
 
 [credential]
     helper = store

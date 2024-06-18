@@ -71,4 +71,6 @@
   hostname          = {{ $hostname | quote }}
   kubernetes        = {{ $kubernetes }}
   personal          = {{ $personal }}
+  personal_gpg_key  = "0453AC9CA9749DCCDC65044DB837AA41062A81EB"
+  work_gpg_key      = "F7310AE36A9697EDDB6658B495911AC6D4D88684"
   pre_commit_common = {{ "LSByZXBvOiBodHRwczovL2dpdGh1Yi5jb20vcHJlLWNvbW1pdC9wcmUtY29tbWl0LWhvb2tzCiAgcmV2OiB2NC4zLjAKICBob29rczoKICAgIC0gaWQ6IHRyYWlsaW5nLXdoaXRlc3BhY2UKICAgIC0gaWQ6IGVuZC1vZi1maWxlLWZpeGVyCiAgICAtIGlkOiBjaGVjay10b21sCiAgICAtIGlkOiBjaGVjay1zaGViYW5nLXNjcmlwdHMtYXJlLWV4ZWN1dGFibGUKICAgIC0gaWQ6IGNoZWNrLXN5bWxpbmtzCiAgICAtIGlkOiBuby1jb21taXQtdG8tYnJhbmNoCiAgICAgIGFyZ3M6IFstLWJyYW5jaCwgbWFpbiwgLS1icmFuY2gsIG1hc3Rlcl0KICAgIC0gaWQ6IGNoZWNrLW1lcmdlLWNvbmZsaWN0Cgo=" | b64dec | quote }}
