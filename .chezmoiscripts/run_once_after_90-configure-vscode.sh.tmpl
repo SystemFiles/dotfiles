@@ -1,7 +1,5 @@
 {{ if (and (eq .chezmoi.os "darwin" "linux") (not .headless)) -}}
 
-if [[ "$(command -v code)" ]]; then
-
 {{ if (eq .chezmoi.os "darwin") }}
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 defaults delete -g ApplePressAndHoldEnabled || true
@@ -13,7 +11,5 @@ if ! grep -qF fs.inotify.max_user_watches=524288 /etc/sysctl.conf; then
   sudo sysctl -p
 fi
 {{ end }}
-
-fi
 
 {{ end }}
