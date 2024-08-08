@@ -13,7 +13,10 @@ Plug 'vim-airline/vim-airline'
 Plug 'nvim-lua/plenary.nvim'
 
 " File browsing
-Plug 'https://github.com/preservim/nerdtree'
+Plug 'preservim/nerdtree'
+
+" Vim-Gnupg
+Plug 'jamessan/vim-gnupg'
 
 set encoding=UTF-8
 
