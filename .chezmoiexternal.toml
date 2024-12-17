@@ -12,9 +12,9 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".oh-my-zsh/custom/themes/021011"]
+[".oh-my-zsh/custom/themes/ultima"]
 type = "archive"
-url = "https://github.com/guesswhozzz/021011.zsh-theme/archive/2.0.0.tar.gz"
+url = "https://github.com/egorlem/ultima.zsh-theme/archive/refs/tags/p2.c7.tar.gz"
 exact = true
 stripComponents = 1
 

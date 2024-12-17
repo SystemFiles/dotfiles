@@ -41,12 +41,18 @@ plugins=(
 )
 
 # Oh-My-ZSH Theme
-ZSH_THEME="021011/021011"
+ZSH_THEME="ultima/ultima"
 
 DISABLE_AUTO_UPDATE="true"
 ZSH_DISABLE_COMPFIX=true
 
 source $ZSH/oh-my-zsh.sh
+
+# TMUX
+# ---------------------------------------------------------------------------------
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+  exec tmux
+fi
 
 {{- if .kubernetes }}
 # Kubernetes Config

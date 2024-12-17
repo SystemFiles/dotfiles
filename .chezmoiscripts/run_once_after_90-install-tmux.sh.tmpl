@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if [[ "$(command -v tmux)" ]]; then
+
+{{ if (eq .chezmoi.os "darwin") }}
+brew install tmux
+{{ end }}
+
+{{ if (eq .chezmoi.os "linux") }}
+apt install tmux
+{{ end }}
+
+fi
