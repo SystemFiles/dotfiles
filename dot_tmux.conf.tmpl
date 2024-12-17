@@ -11,6 +11,9 @@ bind - split-window -v
 unbind '"'
 unbind %
 
+# create new window with 'c'
+bind c new-window -c "#{pane_current_path}"
+
 # switch panes using Alt-arrow or Mac-arrow without prefix
 bind -n M-Left select-pane -L
 bind -n M-Right select-pane -R
