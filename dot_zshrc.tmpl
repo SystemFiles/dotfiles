@@ -26,22 +26,21 @@ export ZSH={{ .chezmoi.homeDir }}/.oh-my-zsh
 
 plugins=(
   colored-man-pages
-  docker
-  docker-compose
-  dotenv
   gpg-agent
   history
   kubectl
   terraform
-  vi-mode
   rust
   golang
   z
   zsh-syntax-highlighting
+  colorize
 )
 
-# Oh-My-ZSH Theme
-ZSH_THEME="ultima/ultima"
+# Oh-My-ZSH Theme (disabled)
+# ---------------------------------------------------------------------------------
+# ZSH_THEME="ultima/ultima"
+ZSH_THEME=""
 
 DISABLE_AUTO_UPDATE="true"
 ZSH_DISABLE_COMPFIX=true
@@ -106,3 +105,19 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 [ -f {{ .chezmoi.homeDir }}/.zsh_completions ] && fpath=({{ .chezmoi.homeDir }}/.zsh_completions $fpath)
 
 autoload -U compinit && compinit
+
+# Prompt Theme
+# ----------------------------------------------------------------------------------
+fpath+=($HOME/.zsh/pure)
+autoload -U promptinit; promptinit
+
+# change the path color
+zstyle :prompt:pure:path color white
+
+# change the color for both `prompt:success` and `prompt:error`
+zstyle ':prompt:pure:prompt:*' color cyan
+
+# turn on git stash status
+zstyle :prompt:pure:git:stash show yes
+
+prompt pure

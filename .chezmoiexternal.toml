@@ -12,11 +12,16 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".oh-my-zsh/custom/themes/ultima"]
-type = "archive"
-url = "https://github.com/egorlem/ultima.zsh-theme/archive/refs/tags/p2.c7.tar.gz"
-exact = true
-stripComponents = 1
+[".zsh/pure"]
+type = "git-repo"
+url = "https://github.com/sindresorhus/pure.git"
+refreshPeriod = "168h"
+
+# [".oh-my-zsh/custom/themes/ultima"]
+# type = "archive"
+# url = "https://github.com/egorlem/ultima.zsh-theme/archive/refs/tags/p2.c7.tar.gz"
+# exact = true
+# stripComponents = 1
 
 [".gittools"]
 type = "git-repo"
