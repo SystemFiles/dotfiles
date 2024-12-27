@@ -3,6 +3,11 @@
 # shellcheck source=/dev/null
 # shellcheck disable=SC2034
 
+# Enable Powerlevel10k instant prompt.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 {{ if eq .chezmoi.os "darwin" }}
 
 # Brew Configuration
@@ -40,8 +45,7 @@ plugins=(
 
 # Oh-My-ZSH Theme (disabled)
 # ---------------------------------------------------------------------------------
-# ZSH_THEME="ultima/ultima"
-ZSH_THEME=""
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 DISABLE_AUTO_UPDATE="true"
 ZSH_DISABLE_COMPFIX=true
@@ -107,18 +111,4 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 
 autoload -U compinit && compinit
 
-# Prompt Theme
-# ----------------------------------------------------------------------------------
-fpath+=($HOME/.zsh/pure)
-autoload -U promptinit; promptinit
-
-# change the path color
-zstyle :prompt:pure:path color white
-
-# change the color for both `prompt:success` and `prompt:error`
-zstyle ':prompt:pure:prompt:*' color cyan
-
-# turn on git stash status
-zstyle :prompt:pure:git:stash show yes
-
-prompt pure
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
