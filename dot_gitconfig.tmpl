@@ -8,120 +8,113 @@
 # {{- /* This file supports Go's text/template language. */ -}}
 #
 
+[init]
+	defaultBranch = main
+
+[feature]
+	experimental = true
+
+[rerere]
+	enabled = true
+	autoupdate = true
+
 [apply]
-    # Detect and fix whitespace errors when applying a patch.
-    whitespace = fix
+	whitespace = fix
+	rebase = true
 
 [push]
-    default = simple
-
-    autoSetupRemote = true
+	default = simple
+	autoSetupRemote = true
+	followTags = true
 
 [pull]
-    ff = only
+	rebase = true
+
+[branch]
+	sort = -committerdate
 
 [commit]
-    gpgsign  = true
+	gpgsign  = true
+	verbose = true
 
 {{ if (eq .chezmoi.os "darwin") }}
 [gpg]
-    program = "/usr/local/bin/gpg"
+	program = "/usr/local/bin/gpg"
 {{ end }}
 
 [core]
-    # Disable line endings output conversion.
-    autocrlf = input
-
-    # Set comment character to something that allows mentioning issue numbers.
-    commentChar = ";"
-
-    # Store global exclusions into a custom file.
-    excludesfile = ~/.gitignore_global
-
-    # Make `git rebase` safer on macOS.
-    # See http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
-    trustctime = false
-
-    # Speed up commands involving untracked files such as `git status`.
-    # See https://git-scm.com/docs/git-update-index#_untracked_cache
-    untrackedCache = true
+	autocrlf = input
+	commentChar = ";"
+	excludesfile = ~/.gitignore_global
+	trustctime = false
+	untrackedCache = true
+	fsmonitor = true
+	untrackedCache = true
 
 [submodule]
-    # Ensure that submodules are recursively handled without need to expressly identify them
-    recurse = true
+	recurse = true
 
 [diff]
-    # List submodules commits in the range.
-    submodule = log
-
-    # Ensure file renames are captured and displayed as such in the diff
-    renames = true
+	submodule = log
+	colorMoved = plain
+	algorithm = histogram
+	renames = true
+	mnemonicPrefix = true
 
 [tag]
-    # Use GPG to sign tags
-    gpgSign = true
+	gpgSign = true
+	sort = version:refname
 
 [fetch]
-    # Remove any remote-tracking references that no longer exist on the remote.
-    prune = true
-
-	# fetch will automatically behave as if the refs/tags/*:refs/tags/* refspec was provided when pruning, if not set already. This allows for setting both this option and fetch.prune to maintain a 1=1 mapping to upstream refs
-    pruneTags = true
-
-	# Recursively fetch into populated submodules
-    recurseSubmodules = true
+	prune = true
+	pruneTags = true
+	recurseSubmodules = true
+	all = true
 
 [filter "lfs"]
-    # Specify the command to convert a worktree file's content to a blob upon checkin.
-    clean = git-lfs clean -- %f
-
-    # Convert between Large File Storage pointer and actual content.
-    process = git-lfs filter-process
-
-    # Specify the command to convert a blob object's content to a worktree file upon checkout.
-    smudge = git-lfs smudge -- %f
-
-    # Turn a content that by itself is unusable into a usable content.
-    required = true
+	clean = git-lfs clean -- %f
+	process = git-lfs filter-process
+	smudge = git-lfs smudge -- %f
+	required = true
 
 [help]
-    # Correct and execute mistyped commands.
-    autocorrect = 1
+	autocorrect = prompt
 
 [merge]
-    # Include summaries of merged commits in newly created merge commit messages.
-    log = true
+	conflictstyle = zdiff3
+	log = true
 
 [mergetool]
-    # Avoid saving an `.orig` backup file after a merge.
-    keepBackup = false
+	# Avoid saving an `.orig` backup file after a merge.
+	keepBackup = false
 
 [rebase]
-    # Create a temporary stash entry before the operation begins.
-    autostash = true
+	autoStash = true
+	autoSquash = true
+	updateRefs = true
 
 [status]
-    # Enable submodule summary of commits.
-    submoduleSummary = true
+	submoduleSummary = true
 
 [user]
-    # Instruct Git to avoid trying to guess defaults for user.email and user.name, and instead retrieve the values only from the configuration.
-    useConfigOnly = true
-    # Specify the email address of the author/committer.
-    email = "{{ .email }}"
+	useConfigOnly = true
+	email = "{{ .email }}"
+	{{- if not .git_user }}
+	name = "{{ .git_username }}"
+	{{ else }}
+	name = "{{ .git_user }}"
+	{{- end }}
+	{{- if .personal }}
+	signingkey = {{ .personal_gpg_key }}
+	{{- else }}
+	signingkey = {{ .work_gpg_key }}
+	{{- end }}
 
-    # Specify the name/username of the author/committer.
-    {{- if not .git_user }}
-    name = "{{ .git_username }}"
-    {{ else }}
-    name = "{{ .git_user }}"
-    {{- end }}
-
-    {{- if .personal }}
-    signingkey = {{ .personal_gpg_key }}
-    {{- else }}
-    signingkey = {{ .work_gpg_key }}
-    {{- end }}
+[column]
+	ui = auto
 
 [credential]
-    helper = store
+	helper = store
+
+[grep]
+	patternType = perl
