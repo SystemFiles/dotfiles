@@ -6,23 +6,19 @@
 # App Store.
 #
 # Reference: https://github.com/Homebrew/homebrew-bundle
+#
+# Quick Start: brew bundle --global
+#
 
 # 'brew tap'
 tap "azure/functions"
-tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/cask-fonts"
-tap "homebrew/core"
-tap "mas-cli/tap"
+tap "mas-cli/tap/mas"
 
 # 'brew install'
 brew "base64"
 brew "cmake"
 brew "coreutils"
 brew "curl"
-brew "docker"
-brew "docker-compose"
-brew "etcd"
 brew "findutils"
 brew "gcc"
 brew "gdbm"
@@ -32,31 +28,21 @@ brew "glab"
 brew "gnupg"
 brew "gnu-sed"
 brew "gnutls"
-brew "helm"
 brew "htop"
 brew "make"
 brew "neovim"
 brew "readline"
-brew "tree"
 brew "watch"
 brew "wget"
 brew "jq"
 brew "yq"
 brew "eza"
 brew "tmux"
-brew "terraform"
-brew "terraform-docs"
-brew "terraform-ls"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
-{{- if .work }}
-brew "openshift-cli"
-{{- end }}
-
 {{- if not .headless }}
 # 'brew install --cask'
-cask "visual-studio-code"
 cask "font-hack-nerd-font"
 {{- end }}
 

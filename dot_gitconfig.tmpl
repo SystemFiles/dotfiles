@@ -37,11 +37,6 @@
 	gpgsign  = true
 	verbose = true
 
-{{ if (eq .chezmoi.os "darwin") }}
-[gpg]
-	program = "/usr/local/bin/gpg"
-{{ end }}
-
 [core]
 	autocrlf = input
 	commentChar = ";"

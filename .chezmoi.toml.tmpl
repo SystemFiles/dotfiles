@@ -12,8 +12,8 @@
 # {{- /* This file supports Go's text/template language. */}}
 
 {{/* boolean feature tags */}}
-{{- $kubernetes := false -}}{{/* true if this machine is used for Kubernetes work */}}
 {{- $headless := false -}}{{/* true if this machine does not have a keyboard/mouse or is virtual */}}
+{{- $gitlab := false -}}{{/* true if this machine is going to be used with Gitlab */}}
 {{- "" -}}
 
 {{- $hostname := .chezmoi.hostname -}}
@@ -38,24 +38,29 @@
 {{-   $git_username = promptString "Git login-formatted username for the Gitlab remote" -}}
 {{- end -}}
 
-{{- $kubernetes := false -}}
-{{- if not (hasKey . "kubernetes") -}}
-{{-   $kubernetes = promptBool "Is this machine used for Kubernetes work" -}}
-{{- end -}}
-
 {{- $work := false -}}
 {{- if not (hasKey . "work") -}}
 {{-   $work = promptBool "Is this a work computer" -}}
 {{- end -}}
 
-{{- $glab_token := get . "glab_token" -}}
-{{- if not $glab_token -}}
-{{-   $glab_token = promptString "Gitlab Auth Token" -}}
+{{- $gitlab := false -}}
+{{- if not (hasKey . "gitlab") -}}
+{{-    $gitlab = promptBool "Do work with Gitlab on this computer" -}}
 {{- end -}}
 
+{{- $glab_token := get . "glab_token" -}}
 {{- $glab_host := get . "glab_host" -}}
+
+{{- if $gitlab -}}
+
+{{- if not $glab_token -}}
+{{-   $glab_token = promptString "Gitlab Auth Token (leave empty if not desired)" -}}
+{{- end -}}
+
 {{- if not $glab_host -}}
 {{-   $glab_host = promptString "Gitlab Host (do not include protocol)" -}}
+{{- end -}}
+
 {{- end -}}
 
 {{- $personal := not $work -}}
@@ -69,7 +74,6 @@
   glab_host         = {{ $glab_host | quote }}
   headless          = {{ $headless }}
   hostname          = {{ $hostname | quote }}
-  kubernetes        = {{ $kubernetes }}
   personal          = {{ $personal }}
   personal_gpg_key  = "0453AC9CA9749DCCDC65044DB837AA41062A81EB"
   work_gpg_key      = "F7310AE36A9697EDDB6658B495911AC6D4D88684"

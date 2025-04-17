@@ -3,7 +3,8 @@
 # shellcheck source=/dev/null
 # shellcheck disable=SC2034
 
-# Enable Powerlevel10k instant prompt.
+# PowerLevel10K Promp
+# ---------------------------------------------------------------------------------
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -58,22 +59,17 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
   exec tmux
 fi
 
-{{- if .kubernetes }}
 # Kubernetes Config
 # ---------------------------------------------------------------------------------
 
 # Get Kubectl Command Completions
-source <(kubectl completion zsh)
+[[ $(command -v kubectl) ]] &&  source <(kubectl completion zsh)
 
-[[ -f ~/.kube_aliases ]] && source {{ .chezmoi.homeDir }}/.kube_aliases
+[[ -f {{ .chezmoi.homeDir }}/.kube_aliases ]] && source {{ .chezmoi.homeDir }}/.kube_aliases
 
-{{- if .work }}
 if [[ -z $KUBECONFIG ]]; then
   export KUBECONFIG={{ .chezmoi.homeDir }}/.kube/config
 fi
-{{- end }}
-
-{{- end }}
 
 # Includes
 # ---------------------------------------------------------------------------------
