@@ -14,6 +14,4 @@ auto-key-retrieve
 
 {{- if .personal }}
 default-key {{ .personal_gpg_key }}
-{{- else if .work }}
-default-key {{ .work_gpg_key }}
 {{- end }}
