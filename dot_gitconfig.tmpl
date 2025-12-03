@@ -99,11 +99,7 @@
 	{{ else }}
 	name = "{{ .git_user }}"
 	{{- end }}
-	{{- if .personal }}
-	signingkey = {{ .personal_gpg_key }}
-	{{- else }}
-	signingkey = {{ .work_gpg_key }}
-	{{- end }}
+	signingKey = "{{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub"
 
 [column]
 	ui = auto
@@ -113,3 +109,6 @@
 
 [grep]
 	patternType = perl
+
+[gpg]
+	format = ssh
