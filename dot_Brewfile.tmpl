@@ -10,10 +10,6 @@
 # Quick Start: brew bundle --global
 #
 
-# 'brew tap'
-tap "azure/functions"
-tap "mas-cli/tap"
-
 # 'brew install'
 brew "goland"
 brew "base64"
@@ -25,7 +21,6 @@ brew "gcc"
 brew "gdbm"
 brew "git"
 brew "git-lfs"
-brew "glab"
 brew "gnupg"
 brew "gnu-sed"
 brew "gnutls"
@@ -42,11 +37,28 @@ brew "jq"
 brew "yq"
 brew "eza"
 brew "tmux"
+brew "azure-cli"
+brew "awscli"
+brew "kubelogin"
+brew "podman"
+brew "pinentry"
+brew "pinentry-mac"
+brew "opentofu"
+brew "gh"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
+
+cask "claude-code"
+cask "windsurf"
+cask "visual-studio-code"
+cask "rectangle"
+cask "font-fira-code-nerd-font"
+cask "displaylink"
+cask "iterm2"
+cask "postman"
+cask "google-chrome"
 
 {{- if not .headless }}
 # 'brew install --cask'
 cask "font-hack-nerd-font"
 {{- end }}
-
