@@ -1,7 +1,0 @@
-{{ if eq .chezmoi.os "linux" -}}
-if [[ $(command -v /bin/zsh) ]]; then
-# redirect to ZSH shell if not already the default
-export SHELL=/bin/zsh
-exec /bin/zsh -l
-fi
-{{ end }}
