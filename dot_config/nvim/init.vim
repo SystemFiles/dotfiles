@@ -15,8 +15,6 @@ Plug 'nvim-lua/plenary.nvim'
 " File browsing
 Plug 'preservim/nerdtree'
 
-" Vim-Gnupg
-Plug 'jamessan/vim-gnupg'
 
 set encoding=UTF-8
 

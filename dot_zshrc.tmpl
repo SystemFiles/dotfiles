@@ -82,9 +82,6 @@ fi
 [ -f {{ .chezmoi.homeDir }}/.glab_exports ] && source {{ .chezmoi.homeDir }}/.glab_exports
 [ -f {{ .chezmoi.homeDir }}/.zsh_custom ] && source {{ .chezmoi.homeDir }}/.zsh_custom
 
-# GPG ENVIRONMENT FOR VIM-GNUPG PLUGIN
-# ---------------------------------------------------------------------------------
-export GPG_TTY=`tty`
 
 # History Configuration
 # ---------------------------------------------------------------------------------
