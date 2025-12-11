@@ -1,0 +1,19 @@
+{
+  "disableAllHooks": true,
+  "cleanupPeriodDays": 7,
+  "permissions": {
+    "allow": ["Bash(git status)", "Bash(npm run lint)"],
+    "ask": ["Bash(git push:*)", "WebFetch(https://api.github.com:*)"],
+    "deny": ["WebFetch", "Bash(curl:*)", "Read(./secrets/**)", "Read(./.env)"]
+  },
+  "enableAllProjectMcpServers": false,
+  "env": {
+    "MAX_THINKING_TOKENS": "32000"
+  },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false, // Disables the 'dangerouslyDisableSandbox' escape hatch
+    "excludedCommands": ["git"] // Exclude essential commands that you trust
+  }
+}
+

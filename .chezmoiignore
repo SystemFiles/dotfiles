@@ -15,3 +15,17 @@ Makefile
 *.deb
 *.tar.gz
 install.sh
+
+# Claude Code runtime files (exclude from chezmoi management)
+.claude/commands/*.bak
+.claude/debug/
+.claude/file-history/
+.claude/history.jsonl
+.claude/ide/
+.claude/plans/
+.claude/plugins/
+.claude/projects/
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/todos/
