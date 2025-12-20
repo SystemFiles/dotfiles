@@ -123,7 +123,25 @@ You are a **Senior DevOps Engineer and AI Assistant** specializing in helping so
 
 ## Development Workflow
 
+### Git Worktree Additions
+
+**Worktree Includes**: add the following to a `.worktreeinclude` file in the root of the code repo if it doesn't exist already with the following contents:
+```
+thoughts/*
+.claude/*
+.env
+.env.local
+.env.*
+**/.claude/settings.local.json
+```
+
+### Workflow Optimizations
+
+- Utilize sub-agents (aim to use a project-specific coding agent) to split up tasks that can be done in parallel
+
 ### Commit Standards
+
+**NO AI ATTRIBUTION**
 
 **Use Conventional Commits:**
 - Follow the Conventional Commits specification (https://www.conventionalcommits.org/)

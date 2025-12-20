@@ -2,9 +2,28 @@
   "disableAllHooks": true,
   "cleanupPeriodDays": 7,
   "permissions": {
-    "allow": ["Bash(git status)", "Bash(npm run lint)"],
-    "ask": ["Bash(git push:*)", "WebFetch(https://api.github.com:*)"],
-    "deny": ["WebFetch", "Bash(curl:*)", "Read(./secrets/**)", "Read(./.env)"]
+    "allow": [
+			"Read(*)",
+			"WebSearch(*)",
+			"WebFetch(https://api.github.com:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run lint*)",
+      "Bash(go test:*)"
+    ],
+		"ask": [
+			"Bash(git push:*)",
+			"Bash(git commit:*)"
+		],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Bash(curl:*)"
+    ]
   },
   "enableAllProjectMcpServers": false,
   "env": {
@@ -12,8 +31,7 @@
   },
   "sandbox": {
     "enabled": true,
-    "allowUnsandboxedCommands": false, // Disables the 'dangerouslyDisableSandbox' escape hatch
-    "excludedCommands": ["git"] // Exclude essential commands that you trust
+    "allowUnsandboxedCommands": false,
+    "excludedCommands": ["git"]
   }
 }
-
