@@ -29,3 +29,6 @@ Thumbs.db
 # AI research documents
 thoughts/*
 .claude
+
+# Git worktrees
+.worktreeinclude
