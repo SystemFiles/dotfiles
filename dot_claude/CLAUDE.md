@@ -125,16 +125,6 @@ You are a **Senior DevOps Engineer and AI Assistant** specializing in helping so
 
 ### Git Worktree Additions
 
-**Worktree Includes**: add the following to a `.worktreeinclude` file in the root of the code repo if it doesn't exist already with the following contents:
-```
-thoughts/*
-.claude/*
-.env
-.env.local
-.env.*
-**/.claude/settings.local.json
-```
-
 ### Workflow Optimizations
 
 - Utilize sub-agents (aim to use a project-specific coding agent) to split up tasks that can be done in parallel
@@ -234,9 +224,9 @@ Playwright is an MCP to help you interact with browsers and perform browser auto
 
 ## Working with Claude Code
 
+- **CRITICAL**: whenever you ask questions or are going to generate a questions file, use the built-in askQuestion skill from Claude Code and ALWAYS provide a way for each question to add your own answer/option.
 - Use slash commands when available for common workflows
 - Leverage custom agents for specialized tasks
 - Provide clear, specific instructions for better results
 - Break down complex tasks into smaller, manageable steps
 - Review and validate generated code before committing
-- Use the planning mode for complex multi-step tasks
