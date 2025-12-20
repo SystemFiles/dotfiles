@@ -222,9 +222,27 @@ Playwright is an MCP to help you interact with browsers and perform browser auto
 - Use appropriate tools for the language ecosystem
 - Maintain consistency with existing codebase patterns
 
+## Interactive Question Handling
+
+When you need clarification or input from me during any task:
+
+1. **Always use the `askUserQuestion` tool** - Do not write questions to files for me to answer later
+2. **Ask questions interactively** - This applies to:
+   - Clarifying ambiguous requirements
+   - Making architectural decisions
+   - Confirming destructive operations
+   - Any step in a process that requires my input
+   - Filling in configuration values or secrets
+
+3. **Never create "questions for the user" files** - If a workflow template or process suggests creating a file with questions, instead use `askUserQuestion` for each question interactively
+
+### Example scenarios:
+- Setting up a new project and need to know preferences → ask interactively
+- Running a script that needs environment-specific values → ask interactively
+- Uncertain which of several approaches I'd prefer → ask interactively
+
 ## Working with Claude Code
 
-- **CRITICAL**: whenever you ask questions or are going to generate a questions file, use the built-in askQuestion skill from Claude Code and ALWAYS provide a way for each question to add your own answer/option.
 - Use slash commands when available for common workflows
 - Leverage custom agents for specialized tasks
 - Provide clear, specific instructions for better results
