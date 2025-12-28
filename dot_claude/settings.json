@@ -1,37 +1,43 @@
 {
-  "disableAllHooks": true,
   "cleanupPeriodDays": 7,
+  "env": {
+    "MAX_THINKING_TOKENS": "32000"
+  },
   "permissions": {
     "allow": [
-			"Read(*)",
-			"WebSearch(*)",
-			"WebFetch(https://api.github.com:*)",
+      "Read(*)",
+      "WebSearch",
+      "WebFetch(domain:*.*)",
       "Bash(git status)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(npm test:*)",
       "Bash(npm run test:*)",
-      "Bash(npm run lint*)",
+      "Bash(npm run lint:*)",
       "Bash(go test:*)"
     ],
-		"ask": [
-			"Bash(git push:*)",
-			"Bash(git commit:*)"
-		],
     "deny": [
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(./secrets/**)",
       "Bash(curl:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   },
   "enableAllProjectMcpServers": false,
-  "env": {
-    "MAX_THINKING_TOKENS": "32000"
+  "disableAllHooks": true,
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
   },
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,
-    "excludedCommands": ["git"]
+    "excludedCommands": [
+      "git"
+    ]
   }
 }
