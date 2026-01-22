@@ -1,0 +1,47 @@
+# ~/.config/starship.toml
+# Starship prompt configuration
+# See: https://starship.rs/config/
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+# Timeout for commands executed by starship (ms)
+command_timeout = 500
+
+# Format of the prompt
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$cmd_duration\
+$line_break\
+$character"""
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+symbol = " "
+
+[git_status]
+conflicted = "⚔️ "
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "🤷"
+stashed = "📦"
+modified = "📝"
+staged = '[++\($count\)](green)'
+renamed = "👅"
+deleted = "🗑"
+
+[cmd_duration]
+min_time = 500
+format = "took [$duration](bold yellow)"

@@ -12,13 +12,6 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".oh-my-zsh/custom/themes/powerlevel10k"]
-type = "archive"
-url = "https://github.com/romkatv/powerlevel10k/archive/refs/tags/v1.20.0.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
 [".gittools"]
 type = "git-repo"
 url = "https://github.com/SystemFiles/git-toolkit.git"

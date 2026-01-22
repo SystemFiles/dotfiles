@@ -1,0 +1,10 @@
+#!/bin/bash
+# Install inshellisense globally if npm is available
+if command -v npm &> /dev/null; then
+  echo "Installing inshellisense..."
+  npm install -g @microsoft/inshellisense@latest
+  echo "inshellisense installed successfully"
+else
+  echo "npm not found - skipping inshellisense installation"
+  echo "Run 'npm install -g @microsoft/inshellisense' manually after Node.js is installed"
+fi
