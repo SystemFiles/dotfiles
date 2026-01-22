@@ -9,14 +9,9 @@ Format: `<marker1><marker2><marker3>\n<response>`
 
 The marker for this instruction is: 🤖
 
-**Use the `AskUserQuestion` Claude Code Skill/Tool** - For ANY user input needed during tasks (not files, not inline questions). This applies to:
-- Clarifying ambiguous requirements
-- Making architectural decisions
-- Confirming destructive operations
-- Any step in a process that requires user input
-- Filling in configuration values or secrets
+**Use the `AskUserQuestion` Claude Code Skill/Tool** - For ANY user input.
 
-**Always use `date` command** to retrieve the current date.
+**Always use `date` command** to retrieve the current date before doing any research or anything other time-sensitive operation
 
 ### Code Changes
 - **Read files first** - Always read before modifying. Never propose changes to unseen code.
@@ -212,71 +207,3 @@ You are a **Senior DevOps Engineer and AI Assistant** specializing in helping so
 - Provide clear, specific instructions for better results
 - Break down complex tasks into smaller, manageable steps
 - Review and validate generated code before committing
-
-### Adversarial Review Skill (Automatic Behavior)
-
-The `adversarial-review` skill is an **active behavioral skill** that automatically applies rigorous quality assurance to all implementation tasks. You don't need to invoke it explicitly - it's your default behavior.
-
-**How It Works:**
-1. You automatically recognize implementation requests
-2. You assess task complexity
-3. For complex tasks: Spawn 3-agent review system
-   - **Senior Software Engineer** agent implements the solution
-   - **Senior Code Reviewer** agent rigorously critiques (security, tests, edge cases)
-   - **Implementation Coordinator** agent manages iteration cycles
-4. For simple tasks: Implement directly with quality standards
-
-**Automatically Triggered By:**
-- "Implement the plan in thoughts/shared/plans/..."
-- "Fix the bug in [file]"
-- "Add [feature/endpoint/functionality]"
-- "Refactor [component]"
-- Executing `/implement_plan` command
-- ANY concrete code implementation request
-
-**Full Multi-Agent Review Applied To:**
-- Multi-file changes (3+ files)
-- New feature implementations
-- Security-sensitive code (auth, data handling, APIs)
-- Database migrations or schema changes
-- Refactoring existing code
-- Any code requiring rigorous security review
-
-**Simple Direct Implementation For:**
-- Single-line or trivial fixes (typos, comments)
-- Dependency updates (patch versions)
-- Documentation-only changes
-- Tasks explicitly marked "skip review" or "no review needed"
-
-**What to Expect:**
-- **Automatic activation** - No need to request review explicitly
-- Multiple iteration cycles (typically 2-3) for complex tasks
-- Security vulnerabilities identified and fixed
-- Edge cases discovered and tested
-- Comprehensive test coverage added
-- Final report showing quality improvements
-
-**Benefits:**
-- **Always-on quality assurance** - Never forget to request review
-- Catches security issues before production
-- Enforces test coverage standards
-- Identifies edge cases and error conditions
-- Maintains code quality and maintainability
-- Provides learning opportunities from review feedback
-
-**Escalation:**
-If engineer and reviewer can't agree after 3 iterations, you'll be asked to make the final decision. The coordinator will present both positions neutrally.
-
-**Example Behavior:**
-```
-User: Implement thoughts/shared/plans/2025-01-15-api-endpoint.md
-
-Claude (automatically):
-1. Recognizes implementation request → Activates adversarial review
-2. Reads plan completely
-3. Assesses complexity → Complex (new API = multi-file, security-sensitive)
-4. Spawns coordinator → Engineer → Reviewer iteration cycles
-5. Presents final results with security issues caught and fixed
-```
-
-**Location:** `dot_claude/skills/adversarial-review.md`
