@@ -3,12 +3,6 @@
 # shellcheck source=/dev/null
 # shellcheck disable=SC2034
 
-# PowerLevel10K Promp
-# ---------------------------------------------------------------------------------
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 {{ if eq .chezmoi.os "darwin" }}
 
 # Brew Configuration
@@ -35,36 +29,54 @@ plugins=(
   colored-man-pages
   gpg-agent
   history
-  kubectl
-  terraform
-  rust
-  golang
   z
   zsh-syntax-highlighting
 	vi-mode
   colorize
 )
 
-# Oh-My-ZSH Theme (disabled)
+# Oh-My-ZSH Theme
 # ---------------------------------------------------------------------------------
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME=""
 
 DISABLE_AUTO_UPDATE="true"
 ZSH_DISABLE_COMPFIX=true
 
 source $ZSH/oh-my-zsh.sh
 
-# TMUX
+# Carapace Completion System
 # ---------------------------------------------------------------------------------
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  exec tmux
+# Load carapace for comprehensive tab completions (1000+ tools)
+# Conditional loading ensures graceful degradation if not yet installed
+if command -v carapace &> /dev/null; then
+  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+  source <(carapace _carapace)
+fi
+
+# Starship Prompt
+# ---------------------------------------------------------------------------------
+if command -v starship &> /dev/null; then
+  eval "$(starship init zsh)"
+fi
+
+# Zellij
+# ---------------------------------------------------------------------------------
+if command -v zellij &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ zellij ]] && [ -z "$ZELLIJ" ]; then
+  exec zellij --layout default attach --create main
+fi
+
+# inshellisense - IDE-style completions
+# ---------------------------------------------------------------------------------
+# Auto-start inshellisense for every new interactive shell
+# Provides IDE-style visual autocomplete with inline documentation
+# Only runs in interactive shells and if not already inside an inshellisense session
+if command -v is &> /dev/null && [[ -n "$PS1" ]] && [[ -z "$INSHELLISENSE_ACTIVE" ]]; then
+  export INSHELLISENSE_ACTIVE=1
+  exec is -s zsh
 fi
 
 # Kubernetes Config
 # ---------------------------------------------------------------------------------
-
-# Get Kubectl Command Completions
-[[ $(command -v kubectl) ]] &&  source <(kubectl completion zsh)
 
 [[ -f {{ .chezmoi.homeDir }}/.kube_aliases ]] && source {{ .chezmoi.homeDir }}/.kube_aliases
 
@@ -79,7 +91,6 @@ fi
 [ -f {{ .chezmoi.homeDir }}/.bash_aliases ] && source {{ .chezmoi.homeDir }}/.bash_aliases
 [ -f {{ .chezmoi.homeDir }}/.bash_exports ] && source {{ .chezmoi.homeDir }}/.bash_exports
 [ -f {{ .chezmoi.homeDir }}/.bash_functions ] && source {{ .chezmoi.homeDir }}/.bash_functions
-[ -f {{ .chezmoi.homeDir }}/.glab_exports ] && source {{ .chezmoi.homeDir }}/.glab_exports
 [ -f {{ .chezmoi.homeDir }}/.zsh_custom ] && source {{ .chezmoi.homeDir }}/.zsh_custom
 
 
@@ -103,6 +114,10 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 
 [ -f {{ .chezmoi.homeDir }}/.zsh_completions ] && fpath=({{ .chezmoi.homeDir }}/.zsh_completions $fpath)
 
-autoload -U compinit && compinit
-
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Cache compinit for 24 hours to improve shell startup time
+autoload -U compinit
+if [[ -n ${HOME}/.zcompdump(#qNmh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi

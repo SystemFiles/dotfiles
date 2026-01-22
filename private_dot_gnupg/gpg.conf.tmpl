@@ -12,6 +12,4 @@ personal-digest-preferences SHA512 SHA384 SHA256 SHA224
 no-emit-version
 auto-key-retrieve
 
-{{- if .personal }}
-default-key {{ .personal_gpg_key }}
-{{- end }}
+default-key {{ .default_gpg_key }}

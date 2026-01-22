@@ -12,13 +12,6 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".oh-my-zsh/custom/themes/powerlevel10k"]
-type = "archive"
-url = "https://github.com/romkatv/powerlevel10k/archive/refs/tags/v1.20.0.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"
-
 [".gittools"]
 type = "git-repo"
 url = "https://github.com/SystemFiles/git-toolkit.git"
@@ -27,10 +20,5 @@ refreshPeriod = "168h"
 [".local/share/nvim/site/autoload/plug.vim"]
 type = "file"
 url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-refreshPeriod = "168h"
-
-[".tmux/plugins/tpm"]
-type = "git-repo"
-url = "https://github.com/tmux-plugins/tpm.git"
 refreshPeriod = "168h"
 

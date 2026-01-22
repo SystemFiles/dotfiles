@@ -1,5 +1,5 @@
 {
-  "cleanupPeriodDays": 7,
+  "cleanupPeriodDays": 30,
   "env": {
     "MAX_THINKING_TOKENS": "32000"
   },
@@ -14,17 +14,18 @@
       "Bash(npm test:*)",
       "Bash(npm run test:*)",
       "Bash(npm run lint:*)",
-      "Bash(go test:*)"
+      "Bash(go test:*)",
+			"Bash(cargo:*)"
     ],
     "deny": [
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Bash(curl:*)"
+      "Read(./secrets/**)"
     ],
     "ask": [
       "Bash(git push:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(curl:*)"
     ]
   },
   "enableAllProjectMcpServers": false,
@@ -35,9 +36,10 @@
   },
   "sandbox": {
     "enabled": true,
-    "allowUnsandboxedCommands": false,
+    "allowUnsandboxedCommands": true,
     "excludedCommands": [
-      "git"
+      "sudo",
+			"ssh"
     ]
   }
 }
