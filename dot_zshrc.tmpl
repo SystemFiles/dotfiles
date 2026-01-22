@@ -59,10 +59,10 @@ if command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
 
-# TMUX
+# Zellij
 # ---------------------------------------------------------------------------------
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  exec tmux
+if command -v zellij &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ zellij ]] && [ -z "$ZELLIJ" ]; then
+  exec zellij --layout default attach --create main
 fi
 
 # inshellisense - IDE-style completions
@@ -114,4 +114,10 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 
 [ -f {{ .chezmoi.homeDir }}/.zsh_completions ] && fpath=({{ .chezmoi.homeDir }}/.zsh_completions $fpath)
 
-autoload -U compinit && compinit
+# Cache compinit for 24 hours to improve shell startup time
+autoload -U compinit
+if [[ -n ${HOME}/.zcompdump(#qNmh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
