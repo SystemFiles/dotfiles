@@ -3,7 +3,7 @@
 # shellcheck source=/dev/null
 # shellcheck disable=SC2034
 
-# PowerLevel10K Promp
+# PowerLevel10K Prompt
 # ---------------------------------------------------------------------------------
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -35,17 +35,13 @@ plugins=(
   colored-man-pages
   gpg-agent
   history
-  kubectl
-  terraform
-  rust
-  golang
   z
   zsh-syntax-highlighting
 	vi-mode
   colorize
 )
 
-# Oh-My-ZSH Theme (disabled)
+# Oh-My-ZSH Theme
 # ---------------------------------------------------------------------------------
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -53,6 +49,15 @@ DISABLE_AUTO_UPDATE="true"
 ZSH_DISABLE_COMPFIX=true
 
 source $ZSH/oh-my-zsh.sh
+
+# Carapace Completion System
+# ---------------------------------------------------------------------------------
+# Load carapace for comprehensive tab completions (1000+ tools)
+# Conditional loading ensures graceful degradation if not yet installed
+if command -v carapace &> /dev/null; then
+  export CARAPACE_BRIDGES='zsh'
+  source <(carapace _carapace)
+fi
 
 # TMUX
 # ---------------------------------------------------------------------------------
@@ -62,9 +67,6 @@ fi
 
 # Kubernetes Config
 # ---------------------------------------------------------------------------------
-
-# Get Kubectl Command Completions
-[[ $(command -v kubectl) ]] &&  source <(kubectl completion zsh)
 
 [[ -f {{ .chezmoi.homeDir }}/.kube_aliases ]] && source {{ .chezmoi.homeDir }}/.kube_aliases
 

@@ -1,9 +1,11 @@
+# Include any custom SSH configs
 Include config.d/*
 
 {{- if .personal }}
 # Homelab Network Prefixes (IPv4)
 Host 172.20.*.* !10.35.1.2
   User lnxadm
+
 # Homelab Network Prefixes (IPv6)
 Host 2600:70ff:b808:* 2001:470:1f2f:1e::*
   User lnxadm

@@ -13,7 +13,6 @@
 
 {{/* boolean feature tags */}}
 {{- $headless := false -}}{{/* true if this machine does not have a keyboard/mouse or is virtual */}}
-{{- $gitlab := false -}}{{/* true if this machine is going to be used with Gitlab */}}
 {{- "" -}}
 
 {{- $hostname := .chezmoi.hostname -}}
@@ -25,7 +24,7 @@
 
 {{- $email := get . "email" -}}
 {{- if not $email -}}
-{{-   $email = promptString "Git email address for the author/committer" -}}
+{{-   $email = promptString "Git email address for the author/committer on this device" -}}
 {{- end -}}
 
 {{- $git_user := get . "git_user" -}}
@@ -38,43 +37,23 @@
 {{-   $git_username = promptString "Git login-formatted username for the Gitlab remote" -}}
 {{- end -}}
 
-{{- $work := false -}}
-{{- if not (hasKey . "work") -}}
-{{-   $work = promptBool "Is this a work computer" -}}
+{{- $default_gpg_key := get . "default_gpg_key" -}}
+{{- if not $default_gpg_key -}}
+{{-   $default_gpg_key = promptString "Default GPG key ID (leave empty for default)" -}}
+{{-   if not $default_gpg_key -}}
+{{-     $default_gpg_key = "0453AC9CA9749DCCDC65044DB837AA41062A81EB" -}}
+{{-   end -}}
 {{- end -}}
-
-{{- $gitlab := false -}}
-{{- if not (hasKey . "gitlab") -}}
-{{-    $gitlab = promptBool "Do work with Gitlab on this computer" -}}
-{{- end -}}
-
-{{- $glab_token := get . "glab_token" -}}
-{{- $glab_host := get . "glab_host" -}}
-
-{{- if $gitlab -}}
-
-{{- if not $glab_token -}}
-{{-   $glab_token = promptString "Gitlab Auth Token (leave empty if not desired)" -}}
-{{- end -}}
-
-{{- if not $glab_host -}}
-{{-   $glab_host = promptString "Gitlab Host (do not include protocol)" -}}
-{{- end -}}
-
-{{- end -}}
-
-{{- $personal := not $work -}}
 
 [data]
   email             = {{ $email | quote }}
   git_user          = {{ $git_user | quote }}
   git_username      = {{ $git_username | quote }}
-  work              = {{ $work }}
-  glab_token        = {{ $glab_token | quote }}
-  glab_host         = {{ $glab_host | quote }}
   headless          = {{ $headless }}
   hostname          = {{ $hostname | quote }}
-  personal          = {{ $personal }}
-  personal_gpg_key  = "0453AC9CA9749DCCDC65044DB837AA41062A81EB"
-  work_gpg_key      = "F7310AE36A9697EDDB6658B495911AC6D4D88684"
-  pre_commit_common = {{ "LSByZXBvOiBodHRwczovL2dpdGh1Yi5jb20vcHJlLWNvbW1pdC9wcmUtY29tbWl0LWhvb2tzCiAgcmV2OiB2NC4zLjAKICBob29rczoKICAgIC0gaWQ6IHRyYWlsaW5nLXdoaXRlc3BhY2UKICAgIC0gaWQ6IGVuZC1vZi1maWxlLWZpeGVyCiAgICAtIGlkOiBjaGVjay10b21sCiAgICAtIGlkOiBjaGVjay1zaGViYW5nLXNjcmlwdHMtYXJlLWV4ZWN1dGFibGUKICAgIC0gaWQ6IGNoZWNrLXN5bWxpbmtzCiAgICAtIGlkOiBuby1jb21taXQtdG8tYnJhbmNoCiAgICAgIGFyZ3M6IFstLWJyYW5jaCwgbWFpbiwgLS1icmFuY2gsIG1hc3Rlcl0KICAgIC0gaWQ6IGNoZWNrLW1lcmdlLWNvbmZsaWN0Cgo=" | b64dec | quote }}
+  default_gpg_key   = {{ $default_gpg_key | quote }}
+  {{- if eq $email "ben@sykesdev.ca" }}
+  personal = true
+  {{- else }}
+  personal = false
+  {{- end }}

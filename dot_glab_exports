@@ -1,5 +1,3 @@
-{{ if (and (ne .glab_host "") (ne .glab_token "")) -}}
-
 if [[ $(command -v glab) ]]; then
 	# configure environment
 	export GITLAB_HOST="{{ .glab_host }}"
@@ -16,5 +14,3 @@ if [[ $(command -v glab) ]]; then
 	alias glmrclose='glab mr close'
 	alias glmrlist='glab mr list'
 fi
-
-{{ end }}
