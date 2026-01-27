@@ -1,0 +1,192 @@
+# -*-mode:sh-*- vim:ft=bash
+# ~/.jj_aliases
+# =============================================================================
+# Shell aliases for Jujutsu (jj) version control system.
+#
+# These aliases mirror the workflow patterns from git_aliases while
+# leveraging jj's native capabilities.
+#
+# Reference: https://docs.jj-vcs.dev/latest/
+
+# Core Operations
+# =============================================================================
+
+# Status - equivalent to 'gs' (git status -v)
+alias js='jj status'
+
+# Log - equivalent to 'decorate' (decorated git log)
+alias jl='jj log'
+
+# Log with graph of entire repo
+alias jla='jj log -r "all()"'
+
+# Log current stack from trunk
+alias jls='jj log -r "trunk()..@"'
+
+# Diff of uncommitted changes
+alias jd='jj diff'
+
+# Diff of current commit
+alias jdc='jj diff -r @'
+
+# Show current commit details
+alias jsh='jj show'
+
+# Commit Operations
+# =============================================================================
+
+# New commit (like creating a new change)
+alias jn='jj new'
+
+# Describe current commit (edit message)
+alias jde='jj describe'
+
+# Squash into parent
+alias jsq='jj squash'
+
+# Split current commit
+alias jsp='jj split'
+
+# Absorb changes into relevant commits (like git absorb)
+alias jab='jj absorb'
+
+# Edit a specific commit
+alias je='jj edit'
+
+# Abandon current commit
+alias jaban='jj abandon'
+
+# Navigation
+# =============================================================================
+
+# Go to next commit
+alias jnext='jj next'
+
+# Go to previous commit
+alias jprev='jj prev'
+
+# Bookmark/Branch Operations
+# =============================================================================
+
+# List bookmarks
+alias jb='jj bookmark list'
+
+# Create bookmark at current commit
+alias jbc='jj bookmark create'
+
+# Move bookmark to current commit
+alias jbm='jj bookmark move'
+
+# Delete bookmark
+alias jbd='jj bookmark delete'
+
+# Remote Operations (Git Backend)
+# =============================================================================
+
+# Fetch from all remotes - equivalent to 'gpa' partial
+alias jf='jj git fetch --all-remotes'
+
+# Push current bookmark
+alias jp='jj git push'
+
+# Push all bookmarks
+alias jpa='jj git push --all'
+
+# Fetch and rebase onto trunk - equivalent to 'gpa' (git fetch && pull)
+alias jfr='jj git fetch --all-remotes && jj rebase -d "trunk()"'
+
+# Sync: fetch all and rebase current stack onto trunk
+alias jsync='jj git fetch --all-remotes && jj rebase -d "trunk()"'
+
+# Rebase Operations
+# =============================================================================
+
+# Rebase current commit onto trunk
+alias jrt='jj rebase -d "trunk()"'
+
+# Rebase entire stack onto trunk
+alias jrts='jj rebase -d "trunk()" -r "trunk()..@"'
+
+# Undo/Redo
+# =============================================================================
+
+# Undo last operation
+alias ju='jj undo'
+
+# Show operation log
+alias jol='jj op log'
+
+# Restore to a specific operation
+alias jor='jj op restore'
+
+# Workspace Operations
+# =============================================================================
+
+# List workspaces
+alias jwl='jj workspace list'
+
+# Add new workspace
+alias jwa='jj workspace add'
+
+# Utility
+# =============================================================================
+
+# Show all conflicts
+alias jcon='jj log -r "conflicts()"'
+
+# Resolve conflicts
+alias jres='jj resolve'
+
+# Git interop - run git commands in colocated repo
+alias jgit='jj git'
+
+# Initialize new jj repo (colocated with git)
+alias jinit='jj git init --colocate'
+
+# Clone repository
+alias jclone='jj git clone'
+
+# File Operations
+# =============================================================================
+
+# Restore file from parent commit
+alias jrest='jj restore'
+
+# Track new files
+alias jtrack='jj file track'
+
+# Untrack files
+alias juntrack='jj file untrack'
+
+# Workflow Shortcuts
+# =============================================================================
+
+# Quick commit: describe and create new change in one flow
+# Usage: jqc "commit message"
+jqc() {
+    jj describe -m "$1" && jj new
+}
+
+# Create new bookmark and push
+# Usage: jnewbranch branch-name
+jnewbranch() {
+    jj bookmark create "$1" && jj git push --bookmark "$1"
+}
+
+# Fetch, rebase onto trunk, and push (full sync cycle)
+# Equivalent to git pull && push workflow
+jfullsync() {
+    jj git fetch --all-remotes && jj rebase -d "trunk()" && jj git push
+}
+
+# Interactive log with fzf (if available)
+if command -v fzf &> /dev/null; then
+    # Select commit to edit using fzf
+    jfe() {
+        local commit
+        commit=$(jj log --no-graph -T 'change_id.short() ++ " " ++ description.first_line() ++ "\n"' | fzf --preview 'jj show -r {1}' | awk '{print $1}')
+        if [ -n "$commit" ]; then
+            jj edit "$commit"
+        fi
+    }
+fi
