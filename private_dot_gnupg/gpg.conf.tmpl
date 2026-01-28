@@ -12,4 +12,8 @@ personal-digest-preferences SHA512 SHA384 SHA256 SHA224
 no-emit-version
 auto-key-retrieve
 
-default-key {{ .default_gpg_key }}
+{{- $gpg_key := "0453AC9CA9749DCCDC65044DB837AA41062A81EB" -}}
+{{- if hasKey . "default_gpg_key" -}}
+{{-   $gpg_key = .default_gpg_key -}}
+{{- end }}
+default-key {{ $gpg_key }}
