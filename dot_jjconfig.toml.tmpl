@@ -1,0 +1,195 @@
+# -*-mode:toml-*- vim:ft=toml
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+# ~/.jjconfig.toml
+# =============================================================================
+# User-specific Jujutsu (jj) configuration file.
+#
+# Reference: https://docs.jj-vcs.dev/latest/config/
+#
+# {{- /* This file supports Go's text/template language. */ -}}
+#
+
+# User Settings
+# =============================================================================
+[user]
+name = "{{ if .git_user }}{{ .git_user }}{{ else }}{{ .git_username }}{{ end }}"
+email = "{{ .email }}"
+
+# Git Backend Settings
+# =============================================================================
+# Colocate jj with git for compatibility during migration
+[git]
+colocate = true
+# Automatically sign commits when pushing to remote
+sign-on-push = true
+# Track bookmarks from remotes by default
+auto-local-bookmark = true
+
+# Commit Signing (SSH - same as git config)
+# =============================================================================
+[signing]
+backend = "ssh"
+key = "{{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub"
+
+# UI Settings
+# =============================================================================
+[ui]
+# Default command when running `jj` with no arguments
+default-command = ["log"]
+
+# Enable color output
+color = "auto"
+
+# Use color-words diff for better readability (similar to git's colorMoved)
+diff-formatter = ":color-words"
+
+# Use diff-style conflict markers (cleaner than snapshot, similar to zdiff3)
+conflict-marker-style = "diff"
+
+# Sort bookmarks by commit date (newest first, like git's branch.sort)
+bookmark-list-sort-keys = ["-committer-date"]
+
+# Paginate output with less
+pager = "less -FRX"
+
+# Diff Settings
+# =============================================================================
+[diff.color-words]
+# Context lines around changes
+context = 3
+# Max alternations for inline diffs
+max-inline-alternation = 3
+
+# Snapshot Settings
+# =============================================================================
+[snapshot]
+# Auto-track all files (like git add -A behavior)
+auto-track = "all()"
+# Maximum file size to auto-snapshot (1MB)
+max-new-file-size = 1048576
+
+# Aliases (in-app)
+# =============================================================================
+[aliases]
+# Quick log of recent commits (like git log --oneline)
+l = ["log", "-r", "@-..@"]
+
+# Log with all commits in current stack
+ls = ["log", "-r", "trunk()..@"]
+
+# Show status
+s = ["status"]
+
+# Describe current commit
+d = ["describe"]
+
+# Create new commit
+n = ["new"]
+
+# Squash into parent
+sq = ["squash"]
+
+# Show diff of current changes
+di = ["diff"]
+
+# Show diff of current commit
+dc = ["diff", "-r", "@"]
+
+# Fetch from all remotes
+f = ["git", "fetch", "--all-remotes"]
+
+# Push current bookmark
+p = ["git", "push"]
+
+# Absorb changes into relevant commits
+ab = ["absorb"]
+
+# Split current commit
+sp = ["split"]
+
+# Rebase onto trunk
+rt = ["rebase", "-d", "trunk()"]
+
+# Undo last operation
+u = ["undo"]
+
+# Show operation log
+ol = ["op", "log"]
+
+# Revset Aliases
+# =============================================================================
+[revset-aliases]
+# Commits that are ready to push (not empty, not WIP)
+'ready()' = 'mine() & ~empty() & ~description(regex:"(?i)^wip")'
+
+# All my work in progress
+'wip()' = 'mine() & description(regex:"(?i)^wip")'
+
+# Current stack from trunk
+'stack()' = 'trunk()..@'
+
+# All mutable commits
+'mut()' = 'mutable()'
+
+# Template Aliases
+# =============================================================================
+[template-aliases]
+# Shorter change ID display
+'format_short_id(id)' = 'id.shortest(8)'
+
+# Templates
+# =============================================================================
+[templates]
+# Include diff in commit description editor (like git commit.verbose)
+draft_commit_description = '''
+concat(
+  builtin_draft_commit_description,
+  "\nJJ: ignore-rest\n",
+  diff.stat(72),
+  "\n",
+  diff.git(),
+)
+'''
+
+# Commit trailers for signed-off-by
+commit_trailers = 'format_signed_off_by_trailer(self)'
+
+# Colors (matching a modern dark terminal theme)
+# =============================================================================
+[colors]
+# Diff colors for better visibility
+"diff removed" = { fg = "red" }
+"diff added" = { fg = "green" }
+"diff removed token" = { fg = "bright red", bold = true }
+"diff added token" = { fg = "bright green", bold = true }
+
+# Working copy highlight
+"working_copy" = { bold = true }
+"working_copy change_id" = { fg = "bright magenta", bold = true }
+"working_copy commit_id" = { fg = "bright blue", bold = true }
+
+# Bookmark/branch colors
+"bookmark" = { fg = "bright cyan" }
+"bookmarks" = { fg = "bright cyan" }
+
+# Commit metadata
+"commit_id" = { fg = "blue" }
+"change_id" = { fg = "magenta" }
+"author" = { fg = "yellow" }
+"timestamp" = { fg = "cyan" }
+"description" = { fg = "white" }
+"empty" = { fg = "bright black" }
+
+# Conflict indicator
+"conflict" = { fg = "bright red", bold = true }
+
+# Fix Tool Settings (for auto-formatting)
+# =============================================================================
+# Uncomment and configure formatters as needed:
+# [tools.rustfmt]
+# command = ["rustfmt", "--emit", "stdout"]
+# patterns = ["glob:'**/*.rs'"]
+#
+# [tools.prettier]
+# command = ["prettier", "--stdin-filepath=$path"]
+# patterns = ["glob:'**/*.{js,ts,jsx,tsx,json,md}'"]
