@@ -1,0 +1,79 @@
+# Codex command policy rules
+
+prefix_rule(
+  pattern=["git", "status"],
+  decision="allow",
+  justification="Read-only git status."
+)
+
+prefix_rule(
+  pattern=["git", "diff"],
+  decision="allow",
+  justification="Read-only git diff."
+)
+
+prefix_rule(
+  pattern=["git", "log"],
+  decision="allow",
+  justification="Read-only git log."
+)
+
+prefix_rule(
+  pattern=["npm", "test"],
+  decision="allow",
+  justification="Run npm tests."
+)
+
+prefix_rule(
+  pattern=["npm", "run", "test"],
+  decision="allow",
+  justification="Run npm test scripts."
+)
+
+prefix_rule(
+  pattern=["npm", "run", "lint"],
+  decision="allow",
+  justification="Run npm lint scripts."
+)
+
+prefix_rule(
+  pattern=["go", "test"],
+  decision="allow",
+  justification="Run Go tests."
+)
+
+prefix_rule(
+  pattern=["cargo"],
+  decision="allow",
+  justification="Run Cargo commands."
+)
+
+prefix_rule(
+  pattern=["git", "commit"],
+  decision="prompt",
+  justification="Confirm before creating commits."
+)
+
+prefix_rule(
+  pattern=["git", "push"],
+  decision="prompt",
+  justification="Confirm before pushing changes."
+)
+
+prefix_rule(
+  pattern=["curl"],
+  decision="prompt",
+  justification="Confirm before making network calls."
+)
+
+prefix_rule(
+  pattern=["sudo"],
+  decision="forbidden",
+  justification="Disallow privilege escalation."
+)
+
+prefix_rule(
+  pattern=["ssh"],
+  decision="forbidden",
+  justification="Disallow SSH commands."
+)
