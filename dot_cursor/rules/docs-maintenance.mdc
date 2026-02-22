@@ -1,0 +1,89 @@
+---
+description: Auto-maintain AGENTS.md and create ADRs when architecturally significant changes occur. Applied in all sessions.
+alwaysApply: true
+---
+
+# Documentation Maintenance
+
+## AGENTS.md Auto-Update
+
+After making or committing changes in a session, evaluate whether the changes are significant enough to warrant updating `AGENTS.md`. **Do not silently update** — inform the user when you detect a trigger and propose the update.
+
+### Significance Triggers
+
+Any ONE of the following means `AGENTS.md` should be updated:
+
+- New or removed top-level directories, or major structural reorganization
+- New or changed build system / task runner configuration (Makefile, Justfile, package.json scripts, Dockerfile, docker-compose, etc.)
+- New language, framework, or major dependency introduced
+- New or significantly changed CI/CD pipelines
+- Changes to environment variables, secrets handling, or setup/onboarding requirements
+- New testing patterns, quality gates, or tooling changes
+- Changes spanning 10+ files or 3+ directories in a single session
+
+### Update Procedure
+
+1. **If `AGENTS.md` exists:** Read it, identify which sections are affected by the session's changes, and make **surgical updates** to only those sections. Do not regenerate the entire file.
+2. **If `AGENTS.md` does not exist:** Read the agentsmd-generator skill from `~/.agents/skills/agentsmd-generator/SKILL.md` and follow its full four-phase process to generate one from scratch. If the skill file is missing, inform the user and suggest running `chezmoi apply`.
+3. After updating, briefly summarize what sections changed and why.
+
+---
+
+## ADR (Architectural Decision Record) Auto-Generation
+
+When you detect or participate in an architectural decision during a session, create an ADR. **Do not silently create** — inform the user that an architectural decision was detected and propose creating the record.
+
+### ADR Triggers
+
+- Choosing between competing libraries, frameworks, or architectural patterns
+- Introducing a new major dependency
+- Changing data storage approach, API contracts, or authentication mechanisms
+- Establishing new conventions or patterns that deviate from existing ones
+- Significant refactoring that changes module boundaries or data flow
+- Deprecating or replacing an existing tool, pattern, or dependency
+
+### ADR Procedure
+
+1. **Check for duplicates:** Scan `thoughts/shared/adr/` for existing ADRs on the same topic. If one exists, update its status (e.g., `superseded by [NNNN]`) rather than creating a duplicate.
+2. **Determine the next number:** List files in `thoughts/shared/adr/`, find the highest `NNNN` prefix, and increment by 1. If the directory is empty or doesn't exist, start at `0001`.
+3. **Create the directory** `thoughts/shared/adr/` if it does not exist.
+4. **Write the ADR** to `thoughts/shared/adr/NNNN-kebab-case-title.md` using the template below.
+5. Keep ADRs concise — aim for under 50 lines. Focus on the **why**, not the **what**.
+
+### ADR Template
+
+```markdown
+# NNNN. Title of Decision
+
+**Date:** YYYY-MM-DD
+**Status:** accepted
+
+## Context
+
+What is the issue or situation that is motivating this decision or change?
+
+## Decision
+
+What is the change that we are making, and why was this option chosen over alternatives?
+
+## Consequences
+
+What becomes easier or more difficult to do because of this change?
+What are the trade-offs?
+```
+
+### ADR Status Values
+
+- `proposed` — Decision is under discussion, not yet finalized
+- `accepted` — Decision has been agreed upon and is in effect
+- `deprecated` — Decision is no longer relevant
+- `superseded by [NNNN]` — Replaced by a newer decision
+
+---
+
+## Important Behavioral Rules
+
+- **Always ask first.** Never silently update `AGENTS.md` or create ADRs. Inform the user what you detected and propose the action.
+- **Be surgical with AGENTS.md.** Only update sections affected by the current changes. Preserve everything else.
+- **Avoid noise.** Do not trigger on trivial changes (typo fixes, comment edits, single-file bug fixes). Use judgment.
+- **ADRs record decisions, not changes.** An ADR captures the reasoning behind a choice. If there was no real decision point (no alternatives considered), an ADR is not needed — the change is just a regular commit.
