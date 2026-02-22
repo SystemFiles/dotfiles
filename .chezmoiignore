@@ -9,6 +9,7 @@
 # Reference: https://www.chezmoi.io/docs/reference/#chezmoiignore
 
 *.tar.gz
+AGENTS.md
 LICENSE.md
 README.md
 Makefile
@@ -29,3 +30,6 @@ install.sh
 .claude/shell-snapshots/
 .claude/statsig/
 .claude/todos/
+
+# Cursor dotfiles (exclude backup and ephemeral)
+dot_cursor/commands/*.bak
