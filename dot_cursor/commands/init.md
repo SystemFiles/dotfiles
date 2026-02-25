@@ -24,3 +24,5 @@ When this command is invoked, you MUST immediately execute the agentsmd-generato
 - Do NOT skip reading the SKILL.md file; it contains critical details beyond what is summarized here.
 - If the skill file is missing, inform the user and suggest running `chezmoi apply` to install it.
 - Ask clarifying questions when conventions, ownership, or workflows are ambiguous (as the skill instructs).
+- Be concise. Avoid long-winded explanations.
+- Don't be lazy. Do things the right way, not the easy way.
