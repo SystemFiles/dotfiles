@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Install find-skills and agentsmd-generator skills for Cursor and Claude Code (global, non-interactive).
+# Install skills for Cursor and Claude Code (global, non-interactive).
 # Runs on every chezmoi apply. Requires npx and network.
 set -e
 if command -v npx >/dev/null 2>&1; then
   npx skills add https://github.com/vercel-labs/skills --skill find-skills -g -a cursor claude-code --copy -y || true
   npx skills add asteroid-belt-llc/skills@agentsmd-generator -g -a cursor claude-code --copy -y || true
+  npx skills add https://github.com/404kidwiz/claude-supercode-skills --skill codebase-exploration -g -a cursor claude-code --copy -y || true
 fi
