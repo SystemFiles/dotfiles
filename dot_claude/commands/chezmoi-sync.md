@@ -1,6 +1,25 @@
 ---
-name: chezmoi_sync
-description: Interactively review and sync drift between local files and chezmoi-tracked state, file by file with diffs
+name: chezmoi-sync
+description: Interactively review and sync drift between local files and chezmoi-tracked
+  state, file by file with diffs
+tags: []
+enabled: true
+arguments:
+  - name: sync-all
+    description: Re-add all tracked files with drift without asking for each one
+    required: false
+meta:
+  model: sonnet
+  agent: claude-code
+  agent_display_name: Claude Code
+  command_dir: .claude/commands
+  command_format: markdown
+  command_file_extension: .md
+  source_prompt: chezmoi-sync
+  source_path: .claude/commands
+  version: 0.1.0
+  updated_at: '2026-04-06T00:00:00.000000+00:00'
+  source_type: local
 ---
 
 # Chezmoi Sync
