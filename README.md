@@ -19,8 +19,25 @@ task basics:install
 
 ### Install Dotfiles
 
+#### Using HTTPS (no SSH key required)
+
 ```sh
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply SystemFiles
+```
+
+#### Using SSH (requires SSH key configured with GitHub)
+
+```sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:SystemFiles/dotfiles.git
+```
+
+### Switch Existing Install from HTTPS to SSH
+
+If you've already initialized chezmoi with HTTPS and want to switch to SSH:
+
+```sh
+cd ~/.local/share/chezmoi
+git remote set-url origin git@github.com:SystemFiles/dotfiles.git
 ```
 
 ## Install location
