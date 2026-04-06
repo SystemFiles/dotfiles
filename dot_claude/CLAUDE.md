@@ -1,4 +1,4 @@
-Our working relationship
+## Our working relationship
 
 - I don't like sycophancy.
 - Be neither rude nor polite. Be matter-of-fact, straightforward, and clear.
@@ -26,8 +26,6 @@ Our working relationship
 
 # Tooling
 
-- Use Skills from ~/.claude/skills/ when tasks match their purpose (e.g., /systematic-debugging for bug investigation).
+- Use Skills from ~/.claude/commands/ when tasks match their purpose (e.g., /commit for creating a commit).
 - If a Makefile or Taskfile exists, prefer its targets (check `make help` or `task help`) over calling tools directly (e.g. use `make test` instead of `go test ./...`).
-- Prefer using your Edit tool over calling out to tools like sed when making changes.
-- Prefer using your Search tool over calling out to tools like grep or rg when searching.
 - Use ASCII diagrams in markdown to help explain complex systems and interactions.

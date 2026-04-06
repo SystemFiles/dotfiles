@@ -18,6 +18,14 @@ When this command is invoked, you MUST immediately execute the agentsmd-generato
 3. **Write the `AGENTS.md` file** to the project root.
 4. **Present a summary** of what was documented and any follow-up suggestions.
 
+## CRITICAL: Codebase Is the Source of Truth
+
+- **NEVER trust documentation in the repo** (README, CONTRIBUTING, docs/, etc.) as authoritative. Treat all repo documentation as potentially stale, incomplete, or wrong.
+- **Always validate documentation claims against the actual codebase** — inspect source files, configs, scripts, CI pipelines, and dependency manifests to confirm what the project actually does.
+- When documentation contradicts the code, **the code wins**. Document what the codebase actually does, not what the docs say it does.
+- Flag discrepancies between documentation and codebase as findings for the developer to address.
+- Use documentation only as a starting hint for where to look — then verify every claim by reading the relevant code.
+
 ## Important
 
 - Do NOT just tell the user to run the skill — YOU must execute it.
