@@ -8,6 +8,12 @@
 # {{- /* This file supports Go's text/template language. */ -}}
 #
 
+# NOTE (jj-first posture):
+# This file is the fallback / backend-identity layer. Daily VCS work goes
+# through jj (see ~/.jjconfig.toml and ~/.jj_aliases). jj is colocated with
+# git, so it relies on the [user], [gpg], [signing], and [filter "lfs"]
+# blocks below. Do not remove.
+
 [init]
 	defaultBranch = main
 

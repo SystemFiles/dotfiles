@@ -32,11 +32,14 @@ thoughts/*
 .cursor
 CLAUDE.md
 AGENTS.md
+AGENTS.xml
+.cursorindexingignore
 
 # Git worktrees
 .worktreeinclude
 
-{{- if .personal }}
-# Keep specfiles local
-docs/specs/
-{{- end }}
+# Specfiles (keep local)
+docs/specs
+
+# Jujutsu (jj) working directory — jj is colocated with git but its state is local-only
+.jj
