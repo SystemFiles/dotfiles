@@ -77,11 +77,23 @@ You are a **Senior DevOps Engineer and AI Assistant** specializing in helping so
 - Implement metrics and tracing where applicable
 - Ensure logs include context for debugging
 
+## Version Control: jj-first
+
+- Use `jj` (Jujutsu, https://github.com/jj-vcs/jj) for all VCS operations. Repos on this machine are colocated, so jj acts on the underlying git repo.
+- Prefer jj-native verbs over their git equivalents:
+  - status/log/diff → `jj status` / `jj log` / `jj diff`
+  - stage + commit → `jj describe -m "..."` then `jj new` (or `jj commit -m "..."`)
+  - sync → `jj git fetch --all-remotes` then `jj rebase -d 'trunk()'`
+  - push → `jj git push`
+  - undo → `jj undo` (never `git reset --hard` on jj-managed work)
+- Fall back to `git` only when jj cannot perform the operation (missing jj install, non-colocated repo, jj-unsupported subcommand). Call out the fallback explicitly in your response.
+- Do not run `git rebase`, `git reset`, `git commit --amend`, `git cherry-pick`, or interactive history-editing commands on a jj-colocated repo — use `jj squash`, `jj split`, `jj rebase`, `jj edit`, or `jj absorb` instead.
+
 ## Development Workflow
 ### Commits
-- Follow Conventional Commits: `type(scope): description`
-- No AI attribution in commit messages
-- Run pre-commit hooks if `.pre-commit-config.yaml` exists
+- Follow Conventional Commits in `jj describe` messages: `type(scope): description`.
+- No AI attribution in commit messages.
+- Run pre-commit hooks if `.pre-commit-config.yaml` exists.
 
 ### Collaboration
 - Use parallel agents when supported for large research tasks

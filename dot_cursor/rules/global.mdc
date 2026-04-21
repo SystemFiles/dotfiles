@@ -6,7 +6,7 @@
 - I am sometimes wrong. Challenge my assumptions.
 - Don't be lazy. Do things the right way, not the easy way.
 - When defining a plan of action, don't provide timeline estimates.
-- If creating a `git commit` do not add yourself as a co-author.
+- If creating a commit (via `jj describe` or, as a last resort, `git commit`) do not add yourself as a co-author.
 
 ## Development Methodology: Executable-First, Thinnest Slice
 
@@ -23,6 +23,23 @@
 - **Parallel paths, not parallel universes** — Run old and new simultaneously; validate new behavior matches or intentionally improves before cutting over
 - **Translation layers are temporary scaffolding** — When adapters, shims, or facades are needed, document their purpose, lifespan, and removal criteria; treat them as tech debt with a known payoff date
 - **Removal is a first-class deliverable** — The migration isn't complete until the old code is deleted; schedule and execute removal as part of the work, not "someday cleanup"
+
+## Version Control: jj-first
+
+- I use `jj` (Jujutsu) as my version control tool, layered on top of git.
+- Use `jj` commands instead of `git` commands. Key differences:
+  - `jj status` instead of `git status`
+  - `jj diff` instead of `git diff`
+  - `jj log` instead of `git log`
+  - `jj new` to create a new change (not `git commit`)
+  - `jj describe` to set a change description
+  - `jj bookmark` instead of `git branch`
+  - `jj git push` instead of `git push`
+  - `jj git fetch` instead of `git fetch`
+- Do NOT use `git` commands directly — always go through `jj`.
+- The working copy in `jj` is always a mutable change. There is no staging area.
+
+## Version Control
 
 # Tooling
 

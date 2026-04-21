@@ -2,145 +2,103 @@
 #:schema https://docs.jj-vcs.dev/latest/config-schema.json
 # ~/.jjconfig.toml
 # =============================================================================
-# User-specific Jujutsu (jj) configuration file.
+# Jujutsu (jj) configuration. jj is the primary VCS on this machine.
+# ~/.gitconfig stays as the colocated-backend identity/LFS/credential layer.
 #
 # Reference: https://docs.jj-vcs.dev/latest/config/
 #
 # {{- /* This file supports Go's text/template language. */ -}}
 #
 
-# User Settings
+# User identity
 # =============================================================================
 [user]
-name = "{{ if .git_user }}{{ .git_user }}{{ else }}{{ .git_username }}{{ end }}"
+name  = "{{ if .git_user }}{{ .git_user }}{{ else }}{{ .git_username }}{{ end }}"
 email = "{{ .email }}"
 
-# Git Backend Settings
+# Git backend (colocated)
 # =============================================================================
-# Colocate jj with git for compatibility during migration
 [git]
+# Colocated with git so gh/glab/IDE tools keep working on the same repo.
 colocate = true
-# Automatically sign commits when pushing to remote
+# Defer signing until push: fast local rewrites, signed only when it matters.
 sign-on-push = true
-# Track bookmarks from remotes by default
-auto-local-bookmark = true
+# Prevent `jj git push` from pushing WIP or private commits.
+# Any commit whose description matches is filtered out of the push set.
+private-commits = 'description(glob:"wip:*") | description(glob:"WIP:*") | description(glob:"private:*")'
 
-# Commit Signing (SSH - same as git config)
+# Track all remote bookmarks locally on fetch (replaces the deprecated
+# `git.auto-local-bookmark`). Add a `[remotes.<name>]` block per remote as
+# needed; `origin` covers the common case.
+[remotes.origin]
+auto-track-bookmarks = "*"
+
+# Commit signing (SSH — mirrors ~/.gitconfig gpg.format = ssh)
 # =============================================================================
 [signing]
-backend = "ssh"
-key = "{{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub"
+behavior = "own"
+backend  = "ssh"
+key      = "{{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub"
 
-# UI Settings
+# UI
 # =============================================================================
 [ui]
-# Default command when running `jj` with no arguments
+# Running `jj` with no args shows the log.
 default-command = ["log"]
+color           = "auto"
+pager           = "less -FRX"
 
-# Enable color output
-color = "auto"
-
-# Use color-words diff for better readability (similar to git's colorMoved)
+# Color-words diff: inline per-word coloring (replaces git diff.colorMoved).
 diff-formatter = ":color-words"
 
-# Use diff-style conflict markers (cleaner than snapshot, similar to zdiff3)
+# Diff-style conflict markers (cleaner than snapshot; equivalent to git zdiff3).
 conflict-marker-style = "diff"
 
-# Sort bookmarks by commit date (newest first, like git's branch.sort)
-bookmark-list-sort-keys = ["-committer-date"]
+# Most-recent-commit first (equivalent to git branch.sort = -committerdate).
+# Note: jj uses a *trailing* `-` suffix for descending order, not a leading `-`.
+bookmark-list-sort-keys = ["committer-date-"]
 
-# Paginate output with less
-pager = "less -FRX"
+# Readable log rendering on narrow terminals.
+log-word-wrap              = true
+log-synthetic-elided-nodes = true
 
-# Diff Settings
-# =============================================================================
 [diff.color-words]
-# Context lines around changes
-context = 3
-# Max alternations for inline diffs
+context                = 3
 max-inline-alternation = 3
 
-# Snapshot Settings
+# Snapshot (working-copy auto-tracking)
 # =============================================================================
 [snapshot]
-# Auto-track all files (like git add -A behavior)
+# Equivalent to `git add -A` running on every jj command.
 auto-track = "all()"
-# Maximum file size to auto-snapshot (1MB)
+# Guardrail: don't auto-snapshot files bigger than 1 MiB.
 max-new-file-size = 1048576
 
-# Aliases (in-app)
-# =============================================================================
-[aliases]
-# Quick log of recent commits (like git log --oneline)
-l = ["log", "-r", "@-..@"]
-
-# Log with all commits in current stack
-ls = ["log", "-r", "trunk()..@"]
-
-# Show status
-s = ["status"]
-
-# Describe current commit
-d = ["describe"]
-
-# Create new commit
-n = ["new"]
-
-# Squash into parent
-sq = ["squash"]
-
-# Show diff of current changes
-di = ["diff"]
-
-# Show diff of current commit
-dc = ["diff", "-r", "@"]
-
-# Fetch from all remotes
-f = ["git", "fetch", "--all-remotes"]
-
-# Push current bookmark
-p = ["git", "push"]
-
-# Absorb changes into relevant commits
-ab = ["absorb"]
-
-# Split current commit
-sp = ["split"]
-
-# Rebase onto trunk
-rt = ["rebase", "-d", "trunk()"]
-
-# Undo last operation
-u = ["undo"]
-
-# Show operation log
-ol = ["op", "log"]
-
-# Revset Aliases
+# Revset aliases — named queries used across the config and shell aliases.
 # =============================================================================
 [revset-aliases]
-# Commits that are ready to push (not empty, not WIP)
+# Robust trunk detection: whichever of main/master/trunk exists on origin.
+'trunk()' = 'present(main@origin) | present(master@origin) | present(trunk@origin)'
+# Commits that are mine, non-empty, and not marked WIP — safe to push.
 'ready()' = 'mine() & ~empty() & ~description(regex:"(?i)^wip")'
-
-# All my work in progress
-'wip()' = 'mine() & description(regex:"(?i)^wip")'
-
-# Current stack from trunk
+# Work-in-progress commits — blocked from push by git.private-commits.
+'wip()'   = 'mine() & description(regex:"(?i)^wip")'
+# Current stack from trunk up to the working copy.
 'stack()' = 'trunk()..@'
+# All mutable (not-yet-immutable) commits.
+'mut()'   = 'mutable()'
+# My unpushed work — not yet in trunk ancestry.
+'open()'  = 'mine() & ~::trunk()'
 
-# All mutable commits
-'mut()' = 'mutable()'
-
-# Template Aliases
+# Template aliases
 # =============================================================================
 [template-aliases]
-# Shorter change ID display
 'format_short_id(id)' = 'id.shortest(8)'
 
 # Templates
 # =============================================================================
 [templates]
-# Include diff in commit description editor (like git commit.verbose)
+# Include diff in the commit-message editor (like git commit.verbose = true).
 draft_commit_description = '''
 concat(
   builtin_draft_commit_description,
@@ -151,45 +109,63 @@ concat(
 )
 '''
 
-# Commit trailers for signed-off-by
+# Append Signed-off-by trailer automatically.
 commit_trailers = 'format_signed_off_by_trailer(self)'
 
-# Colors (matching a modern dark terminal theme)
+# In-app aliases (callable as `jj <alias>`)
+# =============================================================================
+[aliases]
+l  = ["log", "-r", "@-..@"]
+ls = ["log", "-r", "stack()"]
+la = ["log", "-r", "all()"]
+s  = ["status"]
+d  = ["describe"]
+n  = ["new"]
+sq = ["squash"]
+sp = ["split"]
+di = ["diff"]
+dc = ["diff", "-r", "@"]
+ab = ["absorb"]
+rt = ["rebase", "-d", "trunk()"]
+f  = ["git", "fetch", "--all-remotes"]
+p  = ["git", "push"]
+u  = ["undo"]
+ol = ["op", "log"]
+
+# Colors
 # =============================================================================
 [colors]
-# Diff colors for better visibility
-"diff removed" = { fg = "red" }
-"diff added" = { fg = "green" }
-"diff removed token" = { fg = "bright red", bold = true }
-"diff added token" = { fg = "bright green", bold = true }
-
-# Working copy highlight
-"working_copy" = { bold = true }
+"diff removed"           = { fg = "red" }
+"diff added"             = { fg = "green" }
+"diff removed token"     = { fg = "bright red",   bold = true }
+"diff added token"       = { fg = "bright green", bold = true }
+"working_copy"           = { bold = true }
 "working_copy change_id" = { fg = "bright magenta", bold = true }
-"working_copy commit_id" = { fg = "bright blue", bold = true }
+"working_copy commit_id" = { fg = "bright blue",    bold = true }
+"bookmark"               = { fg = "bright cyan" }
+"bookmarks"              = { fg = "bright cyan" }
+"commit_id"              = { fg = "blue" }
+"change_id"              = { fg = "magenta" }
+"author"                 = { fg = "yellow" }
+"timestamp"              = { fg = "cyan" }
+"description"            = { fg = "white" }
+"empty"                  = { fg = "bright black" }
+"conflict"               = { fg = "bright red", bold = true }
 
-# Bookmark/branch colors
-"bookmark" = { fg = "bright cyan" }
-"bookmarks" = { fg = "bright cyan" }
-
-# Commit metadata
-"commit_id" = { fg = "blue" }
-"change_id" = { fg = "magenta" }
-"author" = { fg = "yellow" }
-"timestamp" = { fg = "cyan" }
-"description" = { fg = "white" }
-"empty" = { fg = "bright black" }
-
-# Conflict indicator
-"conflict" = { fg = "bright red", bold = true }
-
-# Fix Tool Settings (for auto-formatting)
+# Fix tools (auto-formatters) — uncomment per machine once tool is installed.
 # =============================================================================
-# Uncomment and configure formatters as needed:
-# [tools.rustfmt]
-# command = ["rustfmt", "--emit", "stdout"]
+# [fix.tools.prettier]
+# command  = ["prettier", "--stdin-filepath=$path"]
+# patterns = ["glob:'**/*.{js,ts,jsx,tsx,json,md,yml,yaml}'"]
+#
+# [fix.tools.rustfmt]
+# command  = ["rustfmt", "--emit", "stdout"]
 # patterns = ["glob:'**/*.rs'"]
 #
-# [tools.prettier]
-# command = ["prettier", "--stdin-filepath=$path"]
-# patterns = ["glob:'**/*.{js,ts,jsx,tsx,json,md}'"]
+# [fix.tools.gofmt]
+# command  = ["gofmt"]
+# patterns = ["glob:'**/*.go'"]
+#
+# [fix.tools.shfmt]
+# command  = ["shfmt", "-"]
+# patterns = ["glob:'**/*.sh'"]
