@@ -67,6 +67,11 @@ run_install-skills.sh.tmpl   guard: skills_enabled == true AND npx present (else
   installer. With `skills_enabled = false` or no `npx` on `PATH`, the script prints a
   skip message and exits 0 (resilient apply).
 - **Add a skill:** append one line to `skills-registry.txt`, then `chezmoi apply`.
+- **Reconcile installed skills:** `task skills:sync` reads the `skills` CLI lockfile
+  (`~/.agents/.skill-lock.json`) and appends any locally-installed skill the registry
+  does not already declare, one entry at a time. Use `task skills:sync:check` for a
+  dry run. Local-path installs are skipped (no shareable git source); the pass is
+  idempotent, so re-running adds nothing new.
 
 ## Ownership Boundary
 
