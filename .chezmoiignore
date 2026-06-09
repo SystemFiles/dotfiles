@@ -21,6 +21,9 @@ install.sh
 docs
 docs/**
 
+# Skills registry — read at render time, never deployed to ~/
+skills-registry.txt
+
 # Claude Code runtime files (exclude from chezmoi management)
 .claude/commands/*.bak
 .claude/debug/
