@@ -31,5 +31,9 @@ install.sh
 .claude/statsig/
 .claude/todos/
 
-# Cursor dotfiles (exclude backup and ephemeral)
-dot_cursor/commands/*.bak
+# AI skills are owned by the `skills` CLI (canonical at ~/.agents/skills, with
+# vendor symlinks). Cede these paths so chezmoi and the CLI never conflict.
+.agents/skills/**
+.claude/skills/**
+.cursor/skills/**
+.codex/skills/**

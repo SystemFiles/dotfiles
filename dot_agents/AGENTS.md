@@ -1,3 +1,9 @@
+# Personal Agent Persona
+
+> Canonical AI persona for every coding tool on this machine.
+> Lives at `~/.agents/AGENTS.md`; Claude Code (`~/.claude/CLAUDE.md`) and Codex
+> (`~/.codex/AGENTS.md`) consume it via chezmoi-managed symlinks. Edit it here.
+
 ## Our working relationship
 
 - I don't like sycophancy.
@@ -38,6 +44,6 @@
 
 # Tooling
 
-- Use Skills from ~/.claude/commands/ when tasks match their purpose (e.g., /commit for creating a commit).
+- Use skills installed under `~/.agents/skills/` (the canonical, vendor-neutral skills location shared by every tool) when a task matches a skill's purpose. Skills are declared in the repo's `skills-registry.txt` and installed/symlinked by the chezmoi skills installer; tools see them via their own `skills/` symlinks (e.g. `~/.cursor/skills/`, `~/.claude/skills/`).
 - If a Makefile or Taskfile exists, prefer its targets (check `make help` or `task help`) over calling tools directly (e.g. use `make test` instead of `go test ./...`).
 - Use ASCII diagrams in markdown to help explain complex systems and interactions.
