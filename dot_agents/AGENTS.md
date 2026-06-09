@@ -1,9 +1,3 @@
-# Personal Agent Persona
-
-> Canonical AI persona for every coding tool on this machine.
-> Lives at `~/.agents/AGENTS.md`; Claude Code (`~/.claude/CLAUDE.md`) and Codex
-> (`~/.codex/AGENTS.md`) consume it via chezmoi-managed symlinks. Edit it here.
-
 ## Our working relationship
 
 - I don't like sycophancy.

@@ -21,6 +21,11 @@ install.sh
 docs
 docs/**
 
+# Repo maintenance tooling — runs against the source tree, never deployed to ~/
+Taskfile.yml
+scripts
+scripts/**
+
 # Skills registry — read at render time, never deployed to ~/
 skills-registry.txt
 

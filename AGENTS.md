@@ -17,6 +17,8 @@ chezmoi diff            # preview pending changes (always before apply)
 chezmoi apply           # deploy source state to ~/
 chezmoi execute-template < file.tmpl   # test .tmpl rendering
 brew bundle --global    # install packages after apply
+task                    # list maintenance tasks (go-task)
+task skills:sync        # add locally-installed skills to skills-registry.txt
 ```
 
 ## Architecture at a Glance
