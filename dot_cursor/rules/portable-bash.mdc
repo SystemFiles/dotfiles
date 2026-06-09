@@ -1,0 +1,32 @@
+---
+description: Write Bash scripts that run on the Bash 3.2 shipped with macOS
+globs: **/*.sh,**/*.sh.tmpl,**/*.bash
+alwaysApply: false
+---
+
+# Portable Bash (macOS Bash 3.2)
+
+macOS ships Bash 3.2.57 (frozen for GPLv3 reasons). Scripts must run there, not
+just under a Homebrew Bash 4/5. Avoid Bash 4+ features; prefer POSIX-compatible
+constructs. `#!/usr/bin/env bash` does not guarantee a newer Bash.
+
+## Avoid (Bash 4+) → Use instead
+
+- `declare -A map` / associative arrays → parallel arrays, or `case` lookups, or
+  a marker-string set: `seen=" $key "; [[ "$set" == *" $key "* ]]`.
+- `mapfile -t arr < <(cmd)` / `readarray` → `while IFS= read -r x; do arr+=("$x"); done < <(cmd)`.
+- `${var^^}` / `${var,,}` (case conversion) → `tr '[:lower:]' '[:upper:]'`.
+- `${arr[-1]}` (negative index) → `${arr[${#arr[@]}-1]}`.
+- `shopt -s globstar` / `**` recursion → `find`.
+- `;;&` / `;&` fallthrough in `case` → restructure the `case`.
+- `wait -n`, `${var@Q}`, and other 4.x+ parameter transforms.
+
+## Verify
+
+Run under system Bash before committing:
+
+```bash
+/bin/bash --version            # confirm 3.2.x
+/bin/bash -n script.sh         # syntax check
+/bin/bash script.sh            # behavior check
+```

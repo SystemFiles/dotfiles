@@ -14,7 +14,7 @@ tasks:
       - task --list
 
   skills:sync:
-    desc: Add locally-installed skills (from the skills CLI lockfile) to skills-registry.txt
+    desc: Interactively confirm and add locally-installed skills to skills-registry.txt (pass -- --yes to add all)
     cmds:
       - ./scripts/sync-skills-registry.sh {{.CLI_ARGS}}
 
