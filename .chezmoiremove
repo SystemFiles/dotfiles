@@ -12,6 +12,10 @@
 .gitignore
 .worktreeinclude
 
+# git-toolkit external (SystemFiles/git-toolkit) removed: superseded by jj. This
+# deletes the previously externally-cloned ~/.gittools directory from the target.
+.gittools
+
 # AI-native overhaul (Spec 01): remove stale vendor artifacts left over from the
 # pre-overhaul duplicated-content layout. These were previously chezmoi-managed
 # and are now gone from the source. Excluded on purpose: the managed symlinks

@@ -50,7 +50,7 @@ When adding source files:
 ## External Dependencies
 
 Managed in `.chezmoiexternal.toml` and refreshed periodically: oh-my-zsh,
-zsh-syntax-highlighting, Powerlevel10k, git-toolkit, vim-plug, tpm. Bump version
+zsh-syntax-highlighting, Powerlevel10k, vim-plug, tpm. Bump version
 pins there when upgrading.
 
 ## Homebrew Bundle
