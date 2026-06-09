@@ -36,8 +36,8 @@
 - Fall back to `git` only when jj cannot perform the operation (missing jj install, non-colocated repo, jj-unsupported subcommand). Call out the fallback explicitly in your response.
 - Do not run `git rebase`, `git reset`, `git commit --amend`, `git cherry-pick`, or interactive history-editing commands on a jj-colocated repo — use `jj squash`, `jj split`, `jj rebase`, `jj edit`, or `jj absorb` instead.
 
-# Tooling
+## Tooling
 
 - Use skills installed under `~/.agents/skills/` (the canonical, vendor-neutral skills location shared by every tool) when a task matches a skill's purpose. Skills are declared in the repo's `skills-registry.txt` and installed/symlinked by the chezmoi skills installer; tools see them via their own `skills/` symlinks (e.g. `~/.cursor/skills/`, `~/.claude/skills/`).
-- If a Makefile or Taskfile exists, prefer its targets (check `make help` or `task help`) over calling tools directly (e.g. use `make test` instead of `go test ./...`).
+- If a Makefile or Taskfile exists, prefer its targets (check `make help` or `task -l`) over calling tools directly (e.g. use `task test` instead of `go test ./...`).
 - Use ASCII diagrams in markdown to help explain complex systems and interactions.
