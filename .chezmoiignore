@@ -17,6 +17,10 @@ Makefile
 *.tar.gz
 install.sh
 
+# Repository documentation (specs, AI config notes) — never deployed to ~/
+docs
+docs/**
+
 # Claude Code runtime files (exclude from chezmoi management)
 .claude/commands/*.bak
 .claude/debug/
