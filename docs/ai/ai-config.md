@@ -1,8 +1,9 @@
 # AI-Tool Configuration
 
 This repo is **AI-native and vendor-neutral**: one canonical persona, consumed by
-each tool through thin symlink shims, plus a declarative skills registry installed
-by the `skills` CLI. There is no duplicated per-tool rule/agent/command content.
+each tool through thin symlink shims, a declarative skills registry installed
+by the `skills` CLI, and a set of vendored subagents exposed through a symlink
+shim. There is no duplicated per-tool rule/agent/command content.
 
 ## Architecture
 
@@ -74,6 +75,44 @@ run_install-skills.sh.tmpl   guard: skills_enabled == true AND npx present (else
   missing entry without prompting, or use `task skills:sync:check` for a dry run.
   Local-path installs are skipped (no shareable git source); the pass is idempotent,
   so re-running adds nothing new.
+
+## Subagents
+
+Six vendored [humanlayer](https://github.com/humanlayer/humanlayer/tree/main/.claude/agents)
+subagents live canonically under `dot_agents/agents/` and are exposed to the tools
+through a single chezmoi symlink, mirroring the persona shim pattern.
+
+```
+dot_agents/agents/*.md
+   │  chezmoi apply
+   ▼
+~/.agents/agents/*.md            ◄── canonical, vendor-neutral (chezmoi-managed)
+   ▲
+   │ chezmoi symlink (dot_claude/symlink_agents.tmpl)
+   │
+~/.claude/agents  ──▶ Claude Code reads it natively; Cursor reads it via its
+                      documented user-level `.claude/agents` compatibility.
+```
+
+- **Agents:** `codebase-analyzer`, `codebase-locator`, `codebase-pattern-finder`,
+  `thoughts-analyzer`, `thoughts-locator`, `web-search-researcher` — each a markdown
+  file with YAML frontmatter (`name`, `description`, `tools`, `model`, optional `color`).
+- **One mount, two tools:** Claude Code only reads `~/.claude/agents/`; Cursor reads
+  both `~/.cursor/agents/` and `~/.claude/agents/`. A single `~/.claude/agents`
+  symlink therefore serves both with no duplicate scanning, so no `~/.cursor/agents`
+  shim is created. Cursor does **not** read `~/.agents/` directly — the symlink is
+  what makes the canonical files visible.
+- **Frontmatter normalization:** upstream ships `model: sonnet`; the vendored copies
+  use `model: inherit` so the field is valid in Cursor (which expects `inherit` or a
+  Cursor model ID) and behaves equivalently in Claude Code. Everything else is verbatim.
+- **Codex excluded:** Codex subagents are TOML (`~/.codex/agents/*.toml`), a different
+  format with current loading regressions, so this markdown set is not shared with it.
+- **Ownership:** unlike `~/.agents/skills/**` (owned by the `skills` CLI), the canonical
+  subagent files are chezmoi-managed, and `~/.claude/agents` is a managed symlink — so
+  it is excluded from `.chezmoiremove`'s stale-artifact cleanup list.
+- **Add a subagent:** drop a `*.md` file in `dot_agents/agents/`, then `chezmoi apply`.
+- **Verify:** `readlink ~/.claude/agents` → `~/.agents/agents`; the six files appear
+  under `~/.agents/agents/`.
 
 ## Ownership Boundary
 
