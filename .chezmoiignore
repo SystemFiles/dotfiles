@@ -17,6 +17,18 @@ Makefile
 *.tar.gz
 install.sh
 
+# Repository documentation (specs, AI config notes) — never deployed to ~/
+docs
+docs/**
+
+# Repo maintenance tooling — runs against the source tree, never deployed to ~/
+Taskfile.yml
+scripts
+scripts/**
+
+# Skills registry — read at render time, never deployed to ~/
+skills-registry.txt
+
 # Claude Code runtime files (exclude from chezmoi management)
 .claude/commands/*.bak
 .claude/debug/
@@ -31,5 +43,9 @@ install.sh
 .claude/statsig/
 .claude/todos/
 
-# Cursor dotfiles (exclude backup and ephemeral)
-dot_cursor/commands/*.bak
+# AI skills are owned by the `skills` CLI (canonical at ~/.agents/skills, with
+# vendor symlinks). Cede these paths so chezmoi and the CLI never conflict.
+.agents/skills/**
+.claude/skills/**
+.cursor/skills/**
+.codex/skills/**
