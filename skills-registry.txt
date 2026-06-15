@@ -24,7 +24,6 @@
 # =============================================================================
 
 asteroid-belt-llc/skills skill=agentsmd-generator
-404kidwiz/claude-supercode-skills skill=codebase-exploration
 liatrio-labs/spec-driven-workflow skill=sdd
 mattpocock/skills skill=tdd
 vercel-labs/skills skill=find-skills
