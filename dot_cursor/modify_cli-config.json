@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+# chezmoi modify_ script for ~/.cursor/cli-config.json.
+#
+# Cursor writes runtime + account state into this same file (authInfo,
+# serverConfigCache, privacyCache, prompt-streak counters, ...). chezmoi must NOT
+# own the whole file or it would (a) commit account identity/secrets to the repo
+# and (b) wipe auth on every `chezmoi apply`. Instead, a modify_ script receives
+# the live target file on stdin and emits the desired contents on stdout; here we
+# merge in only the portable preference keys and let everything else pass through.
+#
+#   live file (stdin) ──► jq '. * $desired' ──► stdout (new file)
+#   keys in $desired win; keys only in the live file (auth/cache/ephemeral) are
+#   preserved verbatim.
+#
+# Requires jq (declared in dot_Brewfile.tmpl). If jq is absent (e.g. first apply
+# before `brew bundle`), the live file is passed through unchanged so config is
+# never clobbered; re-apply once jq is installed to enforce the prefs.
+set -uo pipefail
+
+# chezmoi/Cursor may invoke with a minimal PATH; find jq on macOS + Linux.
+export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:${PATH:-}"
+
+current="$(cat)"
+[ -n "${current}" ] || current='{}'
+
+# Portable preferences enforced on every apply. Intentionally ABSENT (so they
+# pass through from the live file): authInfo, serverConfigCache, privacyCache,
+# runEverythingSettingsPromptStreak — these are account/secret/ephemeral state.
+#
+# NOTE: the model selection block below pins the default model + params, so a
+# `chezmoi apply` will revert an interactive model switch. Delete the "model",
+# "modelParameters", "selectedModel", "hasChangedDefaultModel" and "maxMode" keys
+# from $desired if you prefer the model to be machine-local.
+read -r -d '' desired <<'JSON' || true
+{
+  "version": 1,
+  "editor": { "vimMode": true },
+  "display": {
+    "showLineNumbers": true,
+    "showThinkingBlocks": true,
+    "showStatusIndicators": true,
+    "showStatusLineRunningTime": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.cursor/statusline.sh",
+    "padding": 2
+  },
+  "notifications": true,
+  "hints": true,
+  "rewind": true,
+  "suggestNextPrompt": false,
+  "approvalMode": "allowlist",
+  "network": { "useHttp1ForAgent": false },
+  "sandbox": { "mode": "disabled", "networkAccess": "user_config_with_defaults" },
+  "attribution": { "attributeCommitsToAgent": false, "attributePRsToAgent": false },
+  "permissions": {
+    "allow": [
+      "Shell(ls)",
+      "Shell(date)",
+      "Shell(cd)",
+      "Shell(git log)",
+      "Shell(rg)",
+      "Shell(echo)",
+      "Shell(head)",
+      "Shell(find)",
+      "Shell(readlink)",
+      "Shell(du)",
+      "Shell(sort)",
+      "Shell(git remote)",
+      "Shell(git show)",
+      "Shell(gh)"
+    ],
+    "deny": []
+  },
+  "hasChangedDefaultModel": true,
+  "maxMode": false,
+  "model": {
+    "modelId": "claude-opus-4-8",
+    "displayModelId": "claude-opus-4-8",
+    "displayName": "Opus 4.8 1M Extra High",
+    "displayNameShort": "Opus 4.8 1M Extra High",
+    "aliases": [],
+    "maxMode": false
+  },
+  "modelParameters": {
+    "claude-opus-4-8": [
+      { "id": "thinking", "value": "true" },
+      { "id": "context", "value": "1m" },
+      { "id": "effort", "value": "xhigh" },
+      { "id": "fast", "value": "false" }
+    ],
+    "default": []
+  },
+  "selectedModel": {
+    "modelId": "claude-opus-4-8",
+    "parameters": [
+      { "id": "thinking", "value": "true" },
+      { "id": "context", "value": "1m" },
+      { "id": "effort", "value": "xhigh" },
+      { "id": "fast", "value": "false" }
+    ]
+  }
+}
+JSON
+
+if command -v jq >/dev/null 2>&1; then
+  merged="$(printf '%s' "${current}" | jq --argjson desired "${desired}" '. * $desired' 2>/dev/null)"
+  if [ -n "${merged}" ]; then
+    printf '%s\n' "${merged}"
+  else
+    # jq failed (e.g. malformed live file) — emit the portable settings alone so
+    # the result is still valid JSON rather than empty.
+    printf '%s\n' "${desired}"
+  fi
+else
+  printf '%s' "${current}"
+fi

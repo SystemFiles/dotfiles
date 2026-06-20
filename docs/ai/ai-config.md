@@ -114,6 +114,45 @@ dot_agents/agents/*.md
 - **Verify:** `readlink ~/.claude/agents` → `~/.agents/agents`; the six files appear
   under `~/.agents/agents/`.
 
+## Cursor CLI Configuration
+
+The Cursor CLI keeps **both** portable preferences and account/runtime state in a
+single file, `~/.cursor/cli-config.json`. chezmoi therefore manages it through a
+`modify_` script (not as a whole file), so secrets never enter the repo and auth
+is never wiped on apply.
+
+```
+dot_cursor/executable_statusline.sh ──► ~/.cursor/statusline.sh        (full file)
+
+dot_cursor/modify_cli-config.json
+   │  stdin: live ~/.cursor/cli-config.json
+   ▼
+   jq '. * $desired'                 $desired = portable prefs only
+   │   enforced  → statusLine, editor.vimMode, display, model selection,
+   │               permissions, notifications/hints/rewind, approvalMode, sandbox
+   │   preserved → authInfo, serverConfigCache, privacyCache,
+   │               runEverythingSettingsPromptStreak  ◄── account/secret/ephemeral
+   ▼
+   ~/.cursor/cli-config.json         (merged; auth + caches untouched)
+```
+
+- **Why `modify_`:** Cursor co-writes `authInfo` (email/userId/teamId), server +
+  privacy caches, and counters into the same file. A plain managed file would
+  commit that identity to the repo **and** reset auth on every `chezmoi apply`.
+  The script merges in only the keys in its `$desired` block; all other (live)
+  keys pass through verbatim.
+- **Status line:** `~/.cursor/statusline.sh` shows model + params, cwd, jj
+  change/bookmarks (git-branch fallback), vim mode, and a context-usage bar. It
+  hardens `PATH` for the CLI's minimal env and no-ops when `jq` is missing.
+- **jq dependency:** both pieces need `jq` (declared in `dot_Brewfile.tmpl`).
+  Before `brew bundle` installs it, the `modify_` script passes the live file
+  through unchanged — re-apply once `jq` is present.
+- **Model-pin caveat:** `$desired` pins the default model + params, so an apply
+  reverts an interactive model switch. Drop the `model` / `modelParameters` /
+  `selectedModel` keys from the script to make the model machine-local.
+- **Verify:** `chezmoi diff ~/.cursor/cli-config.json` is empty once applied;
+  the status line previews via `echo '<sample-json>' | ~/.cursor/statusline.sh`.
+
 ## Ownership Boundary
 
 The `skills` CLI owns `~/.agents/skills/**` and the vendor `*/skills/**` symlinks
@@ -126,11 +165,12 @@ cannot delete ignored paths, one-time cleanup of stale `~/.agents/skills/*` is d
 
 - **IDE settings** (themes, keybindings) live outside the home dotfiles
   (e.g. macOS `~/Library/Application Support/Cursor/User/`) and are configured per machine.
-- **Per-tool settings** intentionally removed in this overhaul (Claude `settings.json`,
-  Codex `config.toml`/`rules`, statusline scripts) are not restored here; they can be
-  re-added later as small per-tool files.
+- **Per-tool settings** removed in the AI-native overhaul (Claude `settings.json`,
+  Codex `config.toml`/`rules`) are not restored here. The **Cursor CLI** status line
+  and portable prefs *are* now managed — see [Cursor CLI Configuration](#cursor-cli-configuration).
 - **Ephemeral/sensitive runtime state** under `~/.cursor`, `~/.claude`, `~/.codex`
-  (caches, history, project state) is not in the repo.
+  (auth, caches, history, project state) is not in the repo — the Cursor
+  `modify_` script preserves it on the machine but never commits it.
 
 ## After Apply
 
