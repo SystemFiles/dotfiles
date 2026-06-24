@@ -27,3 +27,5 @@ asteroid-belt-llc/skills skill=agentsmd-generator
 liatrio-labs/spec-driven-workflow skill=sdd
 mattpocock/skills skill=tdd
 vercel-labs/skills skill=find-skills
+anthropics/claude-code skill=Agent Development
+anthropics/skills skill=skill-creator
