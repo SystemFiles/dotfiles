@@ -40,6 +40,7 @@ alias jbd='jj bookmark delete'
 
 # Remotes (git backend)
 # =============================================================================
+alias jjc='jj-clone'
 alias jf='jj git fetch --all-remotes'
 alias jp='jj git push'
 alias jpa='jj git push --all'
