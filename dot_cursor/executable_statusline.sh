@@ -4,7 +4,7 @@
 # shows the selected model + params, the working directory, jj change/bookmarks
 # (git branch fallback), vim mode, and a context-window usage bar.
 #
-# Spec: https://code.claude.com/docs/en/statusline (Cursor mirrors this contract).
+# Cursor CLI statusline JSON contract: stdin session JSON, stdout status rows.
 #
 # `-e` is intentionally omitted so a hiccup never blanks the status line; the CLI
 # keeps the previous text when the script exits non-zero with empty stdout.

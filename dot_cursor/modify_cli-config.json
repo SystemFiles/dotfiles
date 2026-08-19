@@ -76,28 +76,22 @@ read -r -d '' desired <<'JSON' || true
   "hasChangedDefaultModel": true,
   "maxMode": false,
   "model": {
-    "modelId": "claude-opus-4-8",
-    "displayModelId": "claude-opus-4-8",
-    "displayName": "Opus 4.8 1M Extra High",
-    "displayNameShort": "Opus 4.8 1M Extra High",
+    "modelId": "composer-2.5",
+    "displayModelId": "composer-2.5",
+    "displayName": "Composer 2.5",
+    "displayNameShort": "Composer 2.5",
     "aliases": [],
     "maxMode": false
   },
   "modelParameters": {
-    "claude-opus-4-8": [
-      { "id": "thinking", "value": "true" },
-      { "id": "context", "value": "1m" },
-      { "id": "effort", "value": "xhigh" },
+    "composer-2.5": [
       { "id": "fast", "value": "false" }
     ],
     "default": []
   },
   "selectedModel": {
-    "modelId": "claude-opus-4-8",
+    "modelId": "composer-2.5",
     "parameters": [
-      { "id": "thinking", "value": "true" },
-      { "id": "context", "value": "1m" },
-      { "id": "effort", "value": "xhigh" },
       { "id": "fast", "value": "false" }
     ]
   }
