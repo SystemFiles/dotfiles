@@ -41,6 +41,9 @@ IFS="$sep" read -r MODEL PARAMS MAXMODE CWD VIM PCT TOKENS < <(
     , (.context_window.total_input_tokens // 0 | floor | tostring)
     ] | join($s)' 2>/dev/null
 ) || true
+MODEL=${MODEL:-?}
+PCT=${PCT:-0}
+TOKENS=${TOKENS:-0}
 
 # Colors
 R=$'\033[0m'; DIM=$'\033[90m'
