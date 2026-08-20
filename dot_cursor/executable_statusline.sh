@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # Cursor CLI status line. Receives session JSON on stdin, prints status rows to
 # stdout (rendered above the prompt). Tuned for a jj-first, vim-enabled workflow:
 # shows the selected model + params, the working directory, jj change/bookmarks
@@ -8,17 +8,24 @@
 #
 # `-e` is intentionally omitted so a hiccup never blanks the status line; the CLI
 # keeps the previous text when the script exits non-zero with empty stdout.
+#
+# Shebang is /bin/bash (not `env bash`): the CLI spawns this with no shell and an
+# often-minimal PATH, so `/usr/bin/env bash` cannot find bash.
 set -uo pipefail
 
 # The CLI may spawn this with a minimal PATH; make jq/jj discoverable on macOS
 # (Homebrew, Apple Silicon + Intel) and Linux (Homebrew/linuxbrew + system).
-export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:${PATH:-}"
+export PATH="/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin:${PATH:-}"
 
 payload=$(cat)
 
 # jq is required to parse the payload. Without it, emit nothing and exit 0 so the
 # CLI retains the prior status line rather than showing a broken row.
 command -v jq >/dev/null 2>&1 || exit 0
+
+# Defaults so `set -u` never blanks a first paint when jq/read fail (empty or
+# non-JSON stdin).
+MODEL="?" PARAMS="" MAXMODE="" CWD="" VIM="" PCT="0" TOKENS="0"
 
 # Parse all needed fields in one jq pass, joined by the unit-separator (0x1f) so
 # empty fields are preserved (a whitespace IFS would collapse adjacent empties).
@@ -32,7 +39,7 @@ IFS="$sep" read -r MODEL PARAMS MAXMODE CWD VIM PCT TOKENS < <(
     , (.vim.mode // "")
     , (.context_window.used_percentage // 0 | floor | tostring)
     , (.context_window.total_input_tokens // 0 | floor | tostring)
-    ] | join($s)'
+    ] | join($s)' 2>/dev/null
 ) || true
 
 # Colors

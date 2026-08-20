@@ -74,7 +74,7 @@ is never wiped on apply.
 ```
 dot_cursor/executable_statusline.sh ──► ~/.cursor/statusline.sh        (full file)
 
-dot_cursor/modify_cli-config.json
+dot_cursor/modify_cli-config.json.tmpl
    │  stdin: live ~/.cursor/cli-config.json
    ▼
    jq '. * $desired'                 $desired = portable prefs only
@@ -92,8 +92,11 @@ dot_cursor/modify_cli-config.json
   The script merges in only the keys in its `$desired` block; all other (live)
   keys pass through verbatim.
 - **Status line:** `~/.cursor/statusline.sh` shows model + params, cwd, jj
-  change/bookmarks (git-branch fallback), vim mode, and a context-usage bar. It
-  hardens `PATH` for the CLI's minimal env and no-ops when `jq` is missing.
+  change/bookmarks (git-branch fallback), vim mode, and a context-usage bar.
+  `statusLine.command` is `/bin/bash $HOME/.cursor/statusline.sh` (absolute,
+  no `~`) because the CLI `spawn`s it with no shell on Unix — a `~` path and
+  `#!/usr/bin/env bash` both fail under the CLI's minimal PATH. The script
+  also prepends Homebrew + `/usr/bin:/bin` and no-ops when `jq` is missing.
 - **jq dependency:** both pieces need `jq` (declared in `dot_Brewfile.tmpl`).
   Before `brew bundle` installs it, the `modify_` script passes the live file
   through unchanged — re-apply once `jq` is present.
