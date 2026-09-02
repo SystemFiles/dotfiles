@@ -91,8 +91,13 @@ dot_cursor/modify_cli-config.json.tmpl
   commit that identity to the repo **and** reset auth on every `chezmoi apply`.
   The script merges in only the keys in its `$desired` block; all other (live)
   keys pass through verbatim.
-- **Status line:** `~/.cursor/statusline.sh` shows model + params, cwd, jj
-  change/bookmarks (git-branch fallback), vim mode, and a context-usage bar.
+- **Status line:** `~/.cursor/statusline.sh` shows model + params (deduped when
+  `display_name` already includes `param_summary`), cwd, jj change/bookmarks
+  (git-branch fallback), open PR `#N` (via `gh`, looking up bookmarks on
+  `@` **and** the jj stack `ancestors(@) ~ ancestors(trunk())`, plus git
+  branch + worktree name — not just `HEAD`, which stays on trunk after
+  `jj new`), vim mode, and a context-usage bar. PR lookup is cached
+  ~60s and refreshed in the background so a slow `gh` never blanks the footer.
   `statusLine.command` is `/bin/bash $HOME/.cursor/statusline.sh` (absolute,
   no `~`) because the CLI `spawn`s it with no shell on Unix — a `~` path and
   `#!/usr/bin/env bash` both fail under the CLI's minimal PATH. The script
