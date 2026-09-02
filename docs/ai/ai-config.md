@@ -96,7 +96,8 @@ dot_cursor/modify_cli-config.json.tmpl
   (git-branch fallback), open PR `#N` (via `gh`, looking up bookmarks on
   `@` **and** the jj stack `ancestors(@) ~ ancestors(trunk())`, plus git
   branch + worktree name — not just `HEAD`, which stays on trunk after
-  `jj new`), vim mode, and a context-usage bar. PR lookup is cached
+  `jj new`), vim mode, and a 120k smart-window usage bar (`tokens/120k` +
+  %, green→yellow→red). PR lookup is cached
   ~60s and refreshed in the background so a slow `gh` never blanks the footer.
   `statusLine.command` is `/bin/bash $HOME/.cursor/statusline.sh` (absolute,
   no `~`) because the CLI `spawn`s it with no shell on Unix — a `~` path and

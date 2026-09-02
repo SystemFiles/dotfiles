@@ -2,7 +2,7 @@
 # Cursor CLI status line. Receives session JSON on stdin, prints status rows to
 # stdout (rendered above the prompt). Tuned for a jj-first, vim-enabled workflow:
 # shows the selected model + params, the working directory, jj change/bookmarks
-# (git branch fallback), open PR number, vim mode, and a context-window usage bar.
+# (git branch fallback), open PR number, vim mode, and a 120k smart-window bar.
 #
 # Cursor CLI statusline JSON contract: stdin session JSON, stdout status rows.
 #
@@ -25,12 +25,12 @@ command -v jq >/dev/null 2>&1 || exit 0
 
 # Defaults so `set -u` never blanks a first paint when jq/read fail (empty or
 # non-JSON stdin).
-MODEL="?" PARAMS="" MAXMODE="" CWD="" WT="" VIM="" PCT="0" TOKENS="0"
+MODEL="?" PARAMS="" MAXMODE="" CWD="" WT="" VIM="" TOKENS="0" WIN="0" USED_PCT="0"
 
 # Parse all needed fields in one jq pass, joined by the unit-separator (0x1f) so
 # empty fields are preserved (a whitespace IFS would collapse adjacent empties).
 sep=$'\037'
-IFS="$sep" read -r MODEL PARAMS MAXMODE CWD WT VIM PCT TOKENS < <(
+IFS="$sep" read -r MODEL PARAMS MAXMODE CWD WT VIM TOKENS WIN USED_PCT < <(
   printf '%s' "$payload" | jq -j --arg s "$sep" '
     [ (.model.display_name // "?")
     , (.model.param_summary // "")
@@ -38,13 +38,21 @@ IFS="$sep" read -r MODEL PARAMS MAXMODE CWD WT VIM PCT TOKENS < <(
     , (.workspace.current_dir // .cwd // "")
     , (.worktree.name // "")
     , (.vim.mode // "")
-    , (.context_window.used_percentage // 0 | floor | tostring)
     , (.context_window.total_input_tokens // 0 | floor | tostring)
+    , (.context_window.context_window_size // 0 | floor | tostring)
+    , (.context_window.used_percentage // 0 | floor | tostring)
     ] | join($s)' 2>/dev/null
 ) || true
 MODEL=${MODEL:-?}
-PCT=${PCT:-0}
 TOKENS=${TOKENS:-0}
+WIN=${WIN:-0}
+USED_PCT=${USED_PCT:-0}
+
+# Payload used_percentage is vs the model's full window. Prefer the token
+# count; if it's missing, reverse it from used_percentage * window size.
+if [ "${TOKENS:-0}" -eq 0 ] 2>/dev/null && [ "${USED_PCT:-0}" -gt 0 ] 2>/dev/null && [ "${WIN:-0}" -gt 0 ] 2>/dev/null; then
+  TOKENS=$(( USED_PCT * WIN / 100 ))
+fi
 
 # display_name already includes param_summary on current CLI models
 # ("Cursor Grok 4.6 High Fast" + "High Fast" → duplicated suffix). Drop it.
@@ -157,13 +165,25 @@ fi
 LOC="${CWD##*/}"
 [ -z "$LOC" ] && LOC="~"
 
-# --- Tokens, formatted as k ---
-TOK_STR=""
-if [ "${TOKENS:-0}" -ge 1000 ] 2>/dev/null; then
-  TOK_STR=$(awk -v t="$TOKENS" 'BEGIN{printf "%.1fk", t/1000}')
-elif [ "${TOKENS:-0}" -gt 0 ] 2>/dev/null; then
-  TOK_STR="$TOKENS"
-fi
+# --- Smart context window: 0..120k, not the model's full window ---
+SMART_MAX=120000
+TOKENS=${TOKENS:-0}
+case "$TOKENS" in ''|*[!0-9]*) TOKENS=0 ;; esac
+PCT=$(( TOKENS * 100 / SMART_MAX ))
+[ "$PCT" -gt 100 ] && PCT=100
+[ "$PCT" -lt 0 ] && PCT=0
+
+fmt_tok() {
+  awk -v t="$1" 'BEGIN {
+    if (t >= 1000) {
+      k = t / 1000
+      if (k == int(k)) printf "%dk", k
+      else printf "%.1fk", k
+    } else printf "%d", t
+  }'
+}
+TOK_STR=$(fmt_tok "$TOKENS")
+MAX_STR=$(fmt_tok "$SMART_MAX")
 
 # --- Line 1: model · directory · vcs · pr · vim ---
 line1="${CYAN}${MODEL}${R}"
@@ -174,23 +194,34 @@ line1="${line1}  ${BLUE}${LOC}${R}"
 [ -n "$PR" ] && line1="${line1}  ${CYAN}${PR}${R}"
 [ -n "$VIM" ] && line1="${line1}  ${MAGENTA}[${VIM}]${R}"
 
-# --- Line 2: context usage bar ---
-PCT=${PCT:-0}
+# --- Line 2: smart-window usage bar (green -> yellow -> red by fill) ---
 BAR_WIDTH=12
 FILLED=$(( PCT * BAR_WIDTH / 100 ))
 [ "$FILLED" -gt "$BAR_WIDTH" ] && FILLED=$BAR_WIDTH
 [ "$FILLED" -lt 0 ] && FILLED=0
-EMPTY=$(( BAR_WIDTH - FILLED ))
 
 if [ "$PCT" -lt 50 ]; then BARC="$GREEN"
 elif [ "$PCT" -lt 80 ]; then BARC="$YELLOW"
 else BARC="$RED"; fi
 
+# Filled cells take the color of their position on the 0..120k scale so the
+# bar itself walks green -> yellow -> red as it fills; empty cells stay dim.
 bar=""
-[ "$FILLED" -gt 0 ] && { printf -v f "%${FILLED}s" ""; bar="${f// /█}"; }
-[ "$EMPTY" -gt 0 ] && { printf -v e "%${EMPTY}s" ""; bar="${bar}${e// /░}"; }
+_i=0
+while [ "$_i" -lt "$BAR_WIDTH" ]; do
+  _i=$((_i + 1))
+  _cell_pct=$(( _i * 100 / BAR_WIDTH ))
+  if [ "$_i" -le "$FILLED" ]; then
+    if [ "$_cell_pct" -lt 50 ]; then _c="$GREEN"
+    elif [ "$_cell_pct" -lt 80 ]; then _c="$YELLOW"
+    else _c="$RED"; fi
+    bar="${bar}${_c}█"
+  else
+    bar="${bar}${DIM}░"
+  fi
+done
+unset _i _cell_pct _c
 
-line2="${DIM}ctx${R} ${BARC}${bar}${R} ${DIM}${PCT}%${R}"
-[ -n "$TOK_STR" ] && line2="${line2} ${DIM}· ${TOK_STR} tok${R}"
+line2="${DIM}smart${R} ${bar}${R} ${BARC}${TOK_STR}/${MAX_STR}${R} ${BARC}${PCT}%${R}"
 
 printf '%s\n%s' "$line1" "$line2"
