@@ -105,6 +105,30 @@ dot_cursor/modify_cli-config.json.tmpl
   `selectedModel` keys from the script to make the model machine-local.
 - **Verify:** `chezmoi diff ~/.cursor/cli-config.json` is empty once applied;
   the status line previews via `echo '<sample-json>' | ~/.cursor/statusline.sh`.
+- **Hooks:** `~/.cursor/hooks.json` + `hooks/run-shellcheck.sh` are managed as
+  plain files (shellcheck `afterFileEdit` only). Machine-injected hooks (e.g.
+  Adrafinil) are not in the repo and will be replaced on apply until re-injected.
+- **MCP:** `~/.cursor/mcp.json` is **not** managed — MCP endpoints are
+  machine/context-specific.
+
+## Cursor IDE User Preferences
+
+Portable Cursor IDE prefs live under macOS Application Support and are managed:
+
+```
+Library/Application Support/Cursor/User/settings.json   → theme, composer, update track
+Library/Application Support/Cursor/User/keybindings.json → cmd+i → composerMode.agent
+```
+
+Caches, History, globalStorage, and extension VSIX trees under that User folder
+are not managed.
+
+## Zed
+
+- **Source:** `dot_config/zed/settings.json` → **target:** `~/.config/zed/settings.json`
+  (vim mode, fonts, theme, cursor agent_servers).
+- **Cask:** `zed` (and `cursor`) are declared in `dot_Brewfile.tmpl` for non-headless
+  machines.
 
 ## Ownership Boundary
 
