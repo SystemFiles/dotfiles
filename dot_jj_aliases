@@ -40,7 +40,6 @@ alias jbd='jj bookmark delete'
 
 # Remotes (git backend)
 # =============================================================================
-alias jjc='jj-clone'
 alias jf='jj git fetch --all-remotes'
 alias jp='jj git push'
 alias jpa='jj git push --all'
@@ -77,6 +76,10 @@ alias jwa='jj workspace add'
 
 # Helpers
 # =============================================================================
+
+# Clone via jj-clone and cd into the new repo.
+# Usage: jjc <git_url>
+jjc() { local dir; dir=$(jj-clone "$@" | tail -1) && cd "$dir"; }
 
 # Describe @ with a message and open a fresh working copy on top.
 # Usage: jcommit "feat(foo): bar"
