@@ -5,6 +5,9 @@
       {
         "command": "./hooks/run-shellcheck.sh",
         "matcher": "Write"
+      },
+      {
+        "command": "./hooks/lint-markdown.sh"
       }
     ]
   }
