@@ -2,7 +2,9 @@
 # Cursor CLI status line. Receives session JSON on stdin, prints status rows to
 # stdout (rendered above the prompt). Tuned for a jj-first, vim-enabled workflow:
 # shows the selected model + params, the working directory, jj change/bookmarks
-# (git branch fallback), open PR number, vim mode, and a 120k smart-window bar.
+# (git branch fallback), open PR number, vim mode, a smart-window bar
+# (50% of the model's context window, capped at 400k), and account-wide
+# billing-cycle spend (macOS keychain token; omitted when unavailable).
 #
 # Cursor CLI statusline JSON contract: stdin session JSON, stdout status rows.
 #
@@ -165,8 +167,16 @@ fi
 LOC="${CWD##*/}"
 [ -z "$LOC" ] && LOC="~"
 
-# --- Smart context window: 0..120k, not the model's full window ---
-SMART_MAX=120000
+# --- Smart context window: 50% of the model's window, capped at 400k ---
+# Falls back to 120k when the payload omits context_window_size.
+SMART_CAP=400000
+case "$WIN" in ''|*[!0-9]*) WIN=0 ;; esac
+if [ "$WIN" -gt 0 ]; then
+  SMART_MAX=$(( WIN / 2 ))
+  [ "$SMART_MAX" -gt "$SMART_CAP" ] && SMART_MAX=$SMART_CAP
+else
+  SMART_MAX=120000
+fi
 TOKENS=${TOKENS:-0}
 case "$TOKENS" in ''|*[!0-9]*) TOKENS=0 ;; esac
 PCT=$(( TOKENS * 100 / SMART_MAX ))
@@ -204,7 +214,7 @@ if [ "$PCT" -lt 50 ]; then BARC="$GREEN"
 elif [ "$PCT" -lt 80 ]; then BARC="$YELLOW"
 else BARC="$RED"; fi
 
-# Filled cells take the color of their position on the 0..120k scale so the
+# Filled cells take the color of their position on the smart-window scale so the
 # bar itself walks green -> yellow -> red as it fills; empty cells stay dim.
 bar=""
 _i=0
@@ -223,5 +233,51 @@ done
 unset _i _cell_pct _c
 
 line2="${DIM}smart${R} ${bar}${R} ${BARC}${TOK_STR}/${MAX_STR}${R} ${BARC}${PCT}%${R}"
+
+# --- Billing-cycle spend (account-wide, NOT this session) ---
+# cursor.com/api/usage-summary authenticates with the dashboard cookie
+# WorkosCursorSessionToken=<user_id>::<jwt>; the CLI's keychain token works.
+# Amounts are cents. Cached 5 min, refreshed in the background like the PR lookup.
+_cost_cache="/tmp/cursor-sl-cost-$(id -u)"
+_cost_json=""
+_cost_stale=1
+if [ -f "$_cost_cache" ]; then
+  _cost_json=$(cat "$_cost_cache" 2>/dev/null) || true
+  _cmt=$(stat -f %m "$_cost_cache" 2>/dev/null || stat -c %Y "$_cost_cache" 2>/dev/null || echo 0)
+  [ $((_now - _cmt)) -lt 300 ] && _cost_stale=0
+fi
+if [ "$_cost_stale" -eq 1 ] && command -v curl >/dev/null 2>&1; then
+  (
+    _t=$(security find-generic-password -s cursor-access-token -w 2>/dev/null) || _t=""
+    if [ -z "$_t" ]; then
+      _t=$(sqlite3 "$HOME/Library/Application Support/Cursor/User/globalStorage/state.vscdb" \
+        "select value from ItemTable where key='cursorAuth/accessToken'" 2>/dev/null) || _t=""
+    fi
+    [ -n "$_t" ] || exit 0
+    _sub=$(printf '%s' "$_t" | cut -d. -f2 | tr '_-' '/+' \
+      | awk '{l=length($0)%4; if(l) $0=$0 substr("===",1,4-l); print}' \
+      | base64 -d 2>/dev/null | jq -r '.sub // empty' 2>/dev/null)
+    [ -n "$_sub" ] || exit 0
+    _resp=$(curl -s -m 8 -H "Cookie: WorkosCursorSessionToken=${_sub##*|}%3A%3A${_t}" \
+      https://cursor.com/api/usage-summary 2>/dev/null) || exit 0
+    printf '%s' "$_resp" | jq -e '.billingCycleStart' >/dev/null 2>&1 || exit 0
+    printf '%s' "$_resp" > "${_cost_cache}.$$" && mv "${_cost_cache}.$$" "$_cost_cache"
+  ) >/dev/null 2>&1 &
+fi
+COST=""
+if [ -n "$_cost_json" ]; then
+  COST=$(printf '%s' "$_cost_json" | jq -r '
+    def d: (. // 0) / 100 | (. * 100 | round / 100) | tostring
+      | if test("\\.") then (if test("\\.[0-9]$") then . + "0" else . end) else . + ".00" end
+      | "$" + .;
+    def day: sub("\\.[0-9]+Z$"; "Z") | fromdate | strftime("%b %-d");
+    (.individualUsage.overall) as $o
+    | (.teamUsage.onDemand.used // 0) as $od
+    | "\(.billingCycleStart | day)–\(.billingCycleEnd | day) cycle: \($o.used | d)"
+      + (if $o.limit then " / \($o.limit | d) (\(($o.used * 100 / $o.limit) | floor)%)" else "" end)
+      + (if $od > 0 then " + on-demand \($od | d)" else "" end)
+  ' 2>/dev/null) || COST=""
+fi
+[ -n "$COST" ] && line2="${line2}  ${DIM}│${R} ${YELLOW}${COST}${R}"
 
 printf '%s\n%s' "$line1" "$line2"
