@@ -39,6 +39,31 @@ path live in [SystemFiles/skills](https://github.com/SystemFiles/skills)
 (`bunx skills add SystemFiles/skills …`). chezmoi ignores `~/.agents/skills/**`
 and vendor `*/skills/**` so it never conflicts with those installs.
 
+### New-machine install
+
+Run once per machine (not automated, so private sources never block
+`chezmoi apply`):
+
+```bash
+# Catalog: authored + vendored public skills
+bunx skills add SystemFiles/skills -s '*' -g -y
+
+# Public, not vendored (17 MB of rendered examples)
+bunx skills add tt-a1i/archify -g -y
+
+# Liatrio internal (needs liatrio-labs org access)
+bunx skills add git@github.com:liatrio-labs/skills.git -g -y \
+  -s brain-storm liatrio-brand-guidelines local-review \
+     resolving-merge-conflicts thermo-nuclear-code-quality-review
+```
+
+- `liatrio-labs/skills` also ships a `research` skill. It shares a name with
+  the catalog's `research` (mattpocock), so install only one.
+- Client-private skills install the same way from the client's private repo.
+  They are not listed here.
+- Skills with no shared source stay machine-local until promoted into
+  SystemFiles/skills.
+
 ## Subagents
 
 Six vendored [humanlayer](https://github.com/humanlayer/humanlayer/tree/main/.claude/agents)
@@ -78,9 +103,9 @@ dot_cursor/modify_cli-config.json.tmpl
    │  stdin: live ~/.cursor/cli-config.json
    ▼
    jq '. * $desired'                 $desired = portable prefs only
-   │   enforced  → statusLine, editor.vimMode, display, model selection,
-   │               permissions, notifications/hints/rewind, approvalMode, sandbox
-   │   preserved → authInfo, serverConfigCache, privacyCache,
+   │   enforced  → statusLine, editor.vimMode, display, permissions (union),
+   │               notifications/hints/rewind/steering, approvalMode, sandbox
+   │   preserved → authInfo, serverConfigCache, privacyCache, model selection,
    │               runEverythingSettingsPromptStreak  ◄── account/secret/ephemeral
    ▼
    ~/.cursor/cli-config.json         (merged; auth + caches untouched)
@@ -96,9 +121,13 @@ dot_cursor/modify_cli-config.json.tmpl
   (git-branch fallback), open PR `#N` (via `gh`, looking up bookmarks on
   `@` **and** the jj stack `ancestors(@) ~ ancestors(trunk())`, plus git
   branch + worktree name — not just `HEAD`, which stays on trunk after
-  `jj new`), vim mode, and a 120k smart-window usage bar (`tokens/120k` +
-  %, green→yellow→red). PR lookup is cached
+  `jj new`), vim mode, a smart-window usage bar (50% of the model's context
+  window, capped at 400k, 120k when the payload omits the window;
+  green→yellow→red), and account-wide billing-cycle spend. PR lookup is cached
   ~60s and refreshed in the background so a slow `gh` never blanks the footer.
+  Spend is cached 5 min and fetched in the background from
+  `cursor.com/api/usage-summary` (undocumented; may break) using the CLI's
+  keychain token; the row is omitted when the token or response is missing.
   `statusLine.command` is `/bin/bash $HOME/.cursor/statusline.sh` (absolute,
   no `~`) because the CLI `spawn`s it with no shell on Unix — a `~` path and
   `#!/usr/bin/env bash` both fail under the CLI's minimal PATH. The script
@@ -106,13 +135,17 @@ dot_cursor/modify_cli-config.json.tmpl
 - **jq dependency:** both pieces need `jq` (declared in `dot_Brewfile.tmpl`).
   Before `brew bundle` installs it, the `modify_` script passes the live file
   through unchanged — re-apply once `jq` is present.
-- **Model-pin caveat:** `$desired` pins the default model + params, so an apply
-  reverts an interactive model switch. Drop the `model` / `modelParameters` /
-  `selectedModel` keys from the script to make the model machine-local.
+- **Model is machine-local:** `$desired` has no `model` / `modelParameters` /
+  `selectedModel` / `maxMode` keys, so an apply never reverts a model switch.
+- **Permissions union:** jq's `*` replaces arrays, so the script appends live
+  `permissions.allow`/`deny` entries the template lacks (e.g. machine-specific
+  `Mcp(...)` allows) instead of dropping them.
 - **Verify:** `chezmoi diff ~/.cursor/cli-config.json` is empty once applied;
   the status line previews via `echo '<sample-json>' | ~/.cursor/statusline.sh`.
-- **Hooks:** `~/.cursor/hooks.json` + `hooks/run-shellcheck.sh` are managed as
-  plain files (shellcheck `afterFileEdit` only). Machine-injected hooks (e.g.
+- **Hooks:** `~/.cursor/hooks.json`, `hooks/run-shellcheck.sh`, and
+  `hooks/lint-markdown.sh` are managed as plain files (`afterFileEdit`:
+  shellcheck on writes; `markdownlint-cli2 --fix` + report-only `codespell` on
+  `*.md`, both in `dot_Brewfile.tmpl`). Machine-injected hooks (e.g.
   Adrafinil) are not in the repo and will be replaced on apply until re-injected.
 - **MCP:** `~/.cursor/mcp.json` is **not** managed — MCP endpoints are
   machine/context-specific.
