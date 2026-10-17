@@ -13,11 +13,11 @@ Options:
   -h, --help         Show this help message
 
 Examples:
-  jj-clone git@gitlab.natera.com:eng/informatics/labops/signatera/adr.git
-    -> clones into ~/git-local/eng/informatics/labops/signatera/adr
+  jj-clone git@gitlab.com:acme/platform/service.git
+    -> clones into ~/git-local/acme/platform/service
 
-  jj-clone -b ~/src git@gitlab.natera.com:eng/tools/foo.git
-    -> clones into ~/src/eng/tools/foo
+  jj-clone -b ~/src git@gitlab.com:acme/tools/foo.git
+    -> clones into ~/src/acme/tools/foo
 
 Notes:
   On macOS / case-insensitive filesystems, if the remote has refs
@@ -98,7 +98,7 @@ fi
 # because another ref with the same case-folded name will be kept.
 compute_excludes() {
   local remote_url="$1"
-  git ls-remote --heads "$remote_url" 2>/dev/null \
+  git ls-remote --heads "$remote_url" \
     | awk '{ sub(/^refs\/heads\//, "", $2); print $2 }' \
     | awk '
         {
@@ -133,23 +133,45 @@ fallback_clone() {
 
   (
     cd "$dest"
+    set -x
     # Force the `files` backend so jj/gitoxide can read the refs;
     # gitoxide does not yet support reftable.
-    GIT_DEFAULT_REF_FORMAT=files git init --ref-format=files --initial-branch=main >/dev/null
+    GIT_DEFAULT_REF_FORMAT=files git init --ref-format=files --initial-branch=main
     git remote add origin "$remote_url"
     git config --replace-all remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     for ex in "${excludes[@]}"; do
       git config --add remote.origin.fetch "^refs/heads/${ex}"
     done
-    git fetch origin
+    git fetch --progress origin
     jj git init --colocate
-  )
+  ) >&2
+}
+
+# Run a command with all of its output on stderr and a copy in $log.
+# stdout is reserved for the final target path (read by the jjc wrapper).
+# When stderr is a terminal, run under a pty via script(1) so jj/git
+# keep their progress output.
+run_logged() {
+  local log="$1"
+  shift
+  if [[ -t 2 ]]; then
+    if script --version >/dev/null 2>&1; then
+      # util-linux script
+      script -qefc "$(printf '%q ' "$@")" "$log" >&2
+    else
+      # BSD/macOS script
+      script -q "$log" "$@" >&2
+    fi
+  else
+    "$@" 2>&1 | tee "$log" >&2
+  fi
 }
 
 clone_log="$(mktemp -t jj-clone.XXXXXX)"
 trap 'rm -f "$clone_log"' EXIT
 
-if jj git clone "$url" "$target" 2>&1 | tee "$clone_log"; then
+echo "+ jj git clone $url $target" >&2
+if run_logged "$clone_log" jj git clone "$url" "$target"; then
   : # success
 else
   rc=$?
