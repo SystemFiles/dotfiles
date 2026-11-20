@@ -27,6 +27,8 @@ export PATH={{ .chezmoi.homeDir }}/bin:$PATH
 [ -d {{ .chezmoi.homeDir }}/go/bin ] && export PATH={{ .chezmoi.homeDir }}/go/bin:$PATH
 [ -d {{ .chezmoi.homeDir }}/.local/bin ] && export PATH={{ .chezmoi.homeDir }}/.local/bin:$PATH
 [ -d {{ .chezmoi.homeDir }}/.bin ] && export PATH={{ .chezmoi.homeDir }}/.bin:$PATH
+export BUN_INSTALL={{ .chezmoi.homeDir }}/.bun
+[ -d $BUN_INSTALL/bin ] && export PATH=$BUN_INSTALL/bin:$PATH
 
 export ZSH={{ .chezmoi.homeDir }}/.oh-my-zsh
 
@@ -105,5 +107,6 @@ export LESS='-F -g -i -M -R -S -w -X -z-4'
 [ -f {{ .chezmoi.homeDir }}/.zsh_completions ] && fpath=({{ .chezmoi.homeDir }}/.zsh_completions $fpath)
 
 autoload -U compinit && compinit
+[ -s $BUN_INSTALL/_bun ] && source $BUN_INSTALL/_bun
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
