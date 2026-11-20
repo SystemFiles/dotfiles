@@ -1,7 +1,8 @@
 #!/bin/bash
 # Cursor CLI status line. Receives session JSON on stdin, prints status rows to
 # stdout (rendered above the prompt). Tuned for a jj-first, vim-enabled workflow:
-# shows the selected model + params, the working directory, jj change/bookmarks
+# shows the session name (set via /rename), the selected model + params, the
+# working directory, jj change/bookmarks
 # (git branch fallback), open PR number, vim mode, a smart-window bar
 # (50% of the model's context window, capped at 400k), and account-wide
 # billing-cycle spend (macOS keychain token; omitted when unavailable).
@@ -27,12 +28,12 @@ command -v jq >/dev/null 2>&1 || exit 0
 
 # Defaults so `set -u` never blanks a first paint when jq/read fail (empty or
 # non-JSON stdin).
-MODEL="?" PARAMS="" MAXMODE="" CWD="" WT="" VIM="" TOKENS="0" WIN="0" USED_PCT="0"
+MODEL="?" PARAMS="" MAXMODE="" CWD="" WT="" VIM="" TOKENS="0" WIN="0" USED_PCT="0" SESSION=""
 
 # Parse all needed fields in one jq pass, joined by the unit-separator (0x1f) so
 # empty fields are preserved (a whitespace IFS would collapse adjacent empties).
 sep=$'\037'
-IFS="$sep" read -r MODEL PARAMS MAXMODE CWD WT VIM TOKENS WIN USED_PCT < <(
+IFS="$sep" read -r MODEL PARAMS MAXMODE CWD WT VIM TOKENS WIN USED_PCT SESSION < <(
   printf '%s' "$payload" | jq -j --arg s "$sep" '
     [ (.model.display_name // "?")
     , (.model.param_summary // "")
@@ -43,6 +44,7 @@ IFS="$sep" read -r MODEL PARAMS MAXMODE CWD WT VIM TOKENS WIN USED_PCT < <(
     , (.context_window.total_input_tokens // 0 | floor | tostring)
     , (.context_window.context_window_size // 0 | floor | tostring)
     , (.context_window.used_percentage // 0 | floor | tostring)
+    , (.session_name // "" | gsub("[[:cntrl:]]"; " "))
     ] | join($s)' 2>/dev/null
 ) || true
 MODEL=${MODEL:-?}
@@ -69,7 +71,7 @@ if [ -n "${PARAMS:-}" ]; then
 fi
 
 # Colors
-R=$'\033[0m'; DIM=$'\033[90m'
+R=$'\033[0m'; DIM=$'\033[90m'; BOLD=$'\033[1m'
 CYAN=$'\033[36m'; BLUE=$'\033[34m'; GREEN=$'\033[32m'
 MAGENTA=$'\033[35m'; YELLOW=$'\033[33m'; RED=$'\033[31m'
 
@@ -195,8 +197,10 @@ fmt_tok() {
 TOK_STR=$(fmt_tok "$TOKENS")
 MAX_STR=$(fmt_tok "$SMART_MAX")
 
-# --- Line 1: model · directory · vcs · pr · vim ---
-line1="${CYAN}${MODEL}${R}"
+# --- Line 1: session name · model · directory · vcs · pr · vim ---
+line1=""
+[ -n "$SESSION" ] && line1="${BOLD}${MAGENTA}[${SESSION}]${R}  "
+line1="${line1}${CYAN}${MODEL}${R}"
 [ -n "$PARAMS" ] && line1="${line1} ${DIM}${PARAMS}${R}"
 [ -n "$MAXMODE" ] && line1="${line1} ${YELLOW}max${R}"
 line1="${line1}  ${BLUE}${LOC}${R}"
