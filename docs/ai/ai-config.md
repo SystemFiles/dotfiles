@@ -116,7 +116,8 @@ dot_cursor/modify_cli-config.json.tmpl
   commit that identity to the repo **and** reset auth on every `chezmoi apply`.
   The script merges in only the keys in its `$desired` block; all other (live)
   keys pass through verbatim.
-- **Status line:** `~/.cursor/statusline.sh` shows model + params (deduped when
+- **Status line:** `~/.cursor/statusline.sh` shows the session name (when set
+  via `/rename`), model + params (deduped when
   `display_name` already includes `param_summary`), cwd, jj change/bookmarks
   (git-branch fallback), open PR `#N` (via `gh`, looking up bookmarks on
   `@` **and** the jj stack `ancestors(@) ~ ancestors(trunk())`, plus git
